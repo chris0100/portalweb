@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:composition template="/template/template.xhtml">
+        
+        
+        <ui:define name="title">
+            Dashboard  
+        </ui:define>
+        
+        <ui:define name="title2">
+        </ui:define>
+        
+        
+        <!--Botones del menu lateral izquierdo-->
+        <ui:define name="menu">
+            
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                   
+                    <li class="active" style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                   
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                   
+                   <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                   
+                   
+                   
+                   <!--Dropdown para gestion de pedidos-->
+                    <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+                            <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                            
+                            
+                        <ul class="sub-menu children dropdown-menu"> 
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li jsf:rendered="#{loginController.pedidoEcuador}">
+                                <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear pedido ecuador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                        </ul>
+                        
+                    </li>
+                   
+                   
+                   
+                   
+                   <!-- panel izquierdo para proveedores-->
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{certificadoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                   
+                   
+                   <li jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>                  
+                   
+                </ul>
+            </h:form>
+        </ui:define>   <!--Cierra panel izquierdo -->
+        
+        
+        
+        
+        
+        
+        <ui:define name="body" >
+            
+            <section id="about" jsf:rendered="#{loginController.servicioCliente}">
+                <div class="row about-container">
+                        
+                </div>
+            </section><!-- #about -->
+            
+            
+            
+            <!--Body de informacion solo para proveedores-->
+            <section id="about" jsf:rendered="#{loginController.proveedor}">
+                <div class="row about-container">
+                    <div class="col-lg-6">
+                        <p>
+                            Este es un portal diseñado para nuestros proveedores con el fin de facilitar un medio de comunicación inmediato y autogestionable, aquí puedes encontrar:
+                        </p>
+                        <br></br>
+                        <div class="icon-box wow fadeInUp">
+                            <div class="icon"><i class="fa fa-file"></i></div>
+                            <h4 class="title">Certificado de retención por IVA</h4>
+                            <p class="description">Descarga tus certificados de retención por IVA bimestrales.</p>
+                        </div>
+                        <div class="icon-box wow fadeInUp">
+                            <div class="icon"><i class="fa fa-file"></i></div>
+                            <h4 class="title">Certificado de retención en la fuente</h4>
+                            <p class="description">Descarga tus certificados de retención en la fuente anuales.</p>
+                        </div>
+                        <div class="icon-box wow fadeInUp">
+                            <div class="icon"><i class="fa fa-file"></i></div>
+                            <h4 class="title">Certificado de retención por ICA</h4>
+                            <p class="description">Descarga tus certificados de retención por ICA de la ciudad de Cali o Yumbo.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 background order-lg-2 order-1 wow fadeInUp">
+                      <img src="#{request.contextPath}/resources/images/about-extra-1.svg" class="img-fluid" alt=""/>
+                    </div>
+                </div>
+            </section><!-- #about -->
+            
+            
+            
+            
+            <!--Body para el cliente, Si loginController.cliente retorna true.-->
+            <div class="row" jsf:rendered="#{loginController.cliente}" >
+                <div class="col-md-12 form-group" style="margin-top: 1em">
+                    <span class="fa fa-table"> </span> <span style="font-weight: bold"> Top 10 de ítems pedidos</span>
+                    
+                    <!--Cargue de tabla de estadisticas, item itera sobre la listaItemPedidosUnoee-->
+                    <p:dataTable  id="tablaFuncion" emptyMessage="No se encontraron registros" value="#{loginController.listaItemPedidosUnoee}" var="item" rowIndexVar="rowIndex">
+                        
+                        <p:column headerText="Posición" width="70" style="text-align: center">
+                            <h:outputText style="font-weight: bold; font-size: 1.2em" value="#{rowIndex+1}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Código EKA" width="100">
+                            <h:outputText value="#{item.codItem}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Descripción">
+                            <h:outputText value="#{item.descripcion}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Extensión 1">
+                            <h:outputText value="#{item.ext1}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Extensión 2">
+                            <h:outputText value="#{item.ext2}"/>
+                        </p:column>
+                        
+                        <p:column style="text-align: center !important;">
+                            <f:facet name="header">Cantidad</f:facet>
+                            <h:outputText value="#{item.cantPedida}">
+                                <f:convertNumber minFractionDigits="0"/>
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column style="text-align: center !important;">
+                            <f:facet name="header">U. medida</f:facet>
+                            <h:outputText value="#{item.und}"/>
+                        </p:column>
+                        
+                   </p:dataTable>
+                    
+                </div>
+                <!--<div class="col-md-12 form-group">
+                    <span class="fa fa-bar-chart"> </span> <span style="font-weight: bold">  Cantidades de ítems pedidos</span>
+                    <p:chart  type="bar" model="#{loginController.barModel1}" responsive="true" style="width:100%; height: 100%" />
+                </div>-->
+                
+                <!--Carga del grafico-->
+                <div class="col-md-12 form-group">
+                    <span class="fa fa-line-chart"> </span> <span style="font-weight: bold"> Pedidos creados por día</span>
+                    <p:chart type="line"  model="#{loginController.dateModel}" responsive="true" style="width:100%;"/>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            
+            <script>
+                function customExtender () {
+                   this.cfg.grid = {
+                      background: "#ecf0f5", //Set background to white
+                      drawBorder: true,  
+                      drawGridLines: true,
+                        gridLineColor: '#cccccc', // *Color of the grid lines.
+                        borderColor: '#999999', // CSS color spec for border around grid.
+                        borderWidth: 2.0, // pixel width of border around grid.
+                        shadow: true, // draw a shadow for grid.
+                        shadowAngle: 45, // angle of the shadow. Clockwise from x axis.
+                        shadowOffset: 1.5, // offset from the line of the shadow.
+                        shadowWidth: 3, // width of the stroke for the shadow.
+                        shadowDepth: 3, // Number of strokes to make when drawing shadow.
+                        // Each stroke offset by shadowOffset from the last.
+                        shadowAlpha: 0 // Opacity of the shadow
+                   };
+                 }
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>
+

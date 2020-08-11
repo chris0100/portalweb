@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">
+            Historial de pedidos
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                   
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                   
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                   
+                    <li class="menu-item-has-children dropdown active" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li jsf:rendered="#{loginController.pedidoEcuador}">
+                                <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear pedido ecuador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                   
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                   
+                   <li jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>
+                   
+                </ul>
+            </h:form>
+        </ui:define>
+        
+        
+        <ui:define name="body" >
+            <p:growl id="growl" showDetail="true" life="2000"/>
+            <h:form id="form-historialPedido">
+                <div class="row">
+                    
+                    <div class="form-group col-md-3">
+                        <h:outputLabel value="Fecha de inicio del reporte:"  />
+                        <p:calendar id="fechaRevision" 
+                                    autocomplete="off"
+                                    required="true" 
+                                    requiredMessage="Ingresa Fecha 1" 
+                                    value="#{pedidoController.fechaParametro1}"
+                                    pattern="dd/MM/yyyy" maxdate="#{pedidoController.fechaParametro2}">
+                            <f:ajax execute="fechaRevision" render="msgFechaRevision"/>
+                            <p:ajax event="dateSelect" process="@this" update="fechaRevision fechaEntrega"/>
+                            <p:ajax event="valueChange" process="@this" update="fechaEntrega fechaRevision"/>
+                        </p:calendar>
+                        <h:message id="msgFechaRevision" for="fechaRevision"  styleClass="error"/>
+                    </div>
+                    
+                    
+                    <div class="form-group col-md-3">
+                        <h:outputLabel value="Fecha fin del reporte:"  />
+                        <p:calendar id="fechaEntrega" 
+                                    required="true" 
+                                    autocomplete="off"
+                                    requiredMessage="Ingresa Fecha 2" 
+                                    value="#{pedidoController.fechaParametro2}"
+                                    pattern="dd/MM/yyyy" mindate="#{pedidoController.fechaParametro1}">
+                            <f:ajax execute="fechaEntrega" render="msgFechaEntraga"/>
+                            <p:ajax event="dateSelect" process="@this" update="fechaRevision fechaEntrega"/>
+                            <p:ajax event="valueChange" process="@this" update="fechaEntrega fechaRevision"/>
+                        </p:calendar>
+                        <h:message id="msgFechaEntrega" for="fechaEntrega"  styleClass="error"/>
+                    </div>
+                    
+                    
+                    <div class="col-md-3 form-group">
+                        <div class="col-sm-4 form-group">
+                            <p:commandButton  action="#{pedidoController.recargarConsultarPedidosUnoee}"
+                                   type="submit" 
+                                   style="margin-top: 25px"
+                                   icon="fa fa-search"
+                                   value="Consultar"
+                                   styleClass="btn btn-primary"
+                                   id="myButton1"
+                                   ajax="false"
+                                   update="@this form-historialPedido:documentosTable">
+                            </p:commandButton>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+                <p:separator></p:separator>
+                
+                
+                <p:outputPanel id="documentosTablePanel">
+                    <p:dataTable value="#{pedidoController.listaPedidosUnoee}" var="item"
+                                rows="50" id="documentosTable" paginator="true"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rowsPerPageTemplate="50, 100,150">
+                        <f:facet name="header">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4 style="font-weight: bold; text-align: left" >
+                                            Total pedidos: #{fn:length(pedidoController.listaPedidosUnoee)}
+                                        </h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </f:facet>
+                        <p:column sortBy="#{item.numeroDocumento}" filterBy="#{item.numeroDocumento}"  filterMatchMode="contains">
+                            <f:facet name="header">Numero documento</f:facet>
+                            <h:outputText style="font-weight: bold" value="#{item.numeroDocumento}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.razonSocialCliente}" filterBy="#{item.razonSocialCliente}"  filterMatchMode="contains">
+                            <f:facet name="header">Razon social</f:facet>
+                            <h:outputText value="#{item.razonSocialCliente}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.estado}" filterBy="#{item.estado}" filterMatchMode="contains">
+                            <f:facet name="header">Estado</f:facet>
+                            <h:outputText value="#{item.estado}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.notas}" filterBy="#{item.notas}" filterMatchMode="contains">
+                            <f:facet name="header">notas</f:facet>
+                            <h:outputText value="#{item.notas}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.ordenCompra}" filterBy="#{item.ordenCompra}" filterMatchMode="contains">
+                            <f:facet name="header">Orden de compra</f:facet>
+                            <h:outputText value="#{item.ordenCompra}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.valorBrutoDocumento}" filterBy="#{item.valorBrutoDocumento}" filterMatchMode="contains">
+                            <f:facet name="header">Valor bruto pedido</f:facet>
+                            <h:outputText style="font-weight: bold" value="#{item.valorBrutoDocumento}">
+                                <f:convertNumber type="currency" currencySymbol="$" minFractionDigits="0"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column sortBy="#{item.valorImpDocumento}" filterBy="#{item.valorImpDocumento}" filterMatchMode="contains">
+                            <f:facet name="header">Valor impuestos pedido</f:facet>
+                            <h:outputText style="font-weight: bold" value="#{item.valorImpDocumento}">
+                                <f:convertNumber type="currency" currencySymbol="$" minFractionDigits="0"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column sortBy="#{item.valorNetoDocumento}" filterBy="#{item.valorNetoDocumento}" filterMatchMode="contains">
+                            <f:facet name="header">Valor neto pedido</f:facet>
+                            <h:outputText style="font-weight: bold" value="#{item.valorNetoDocumento}">
+                                <f:convertNumber type="currency" currencySymbol="$" minFractionDigits="0"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column sortBy="#{item.idPuntoEnvio}" filterBy="#{item.idPuntoEnvio}" filterMatchMode="contains">
+                            <f:facet name="header">Punto de envio</f:facet>
+                            <h:outputText value="#{item.idPuntoEnvio}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.puntoEnvio}" filterBy="#{item.puntoEnvio}" filterMatchMode="contains">
+                            <f:facet name="header">descripción punto envío</f:facet>
+                            <h:outputText value="#{item.puntoEnvio}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.direccion1}" filterBy="#{item.direccion1}" filterMatchMode="contains">
+                            <f:facet name="header">Dirección de envio</f:facet>
+                            <h:outputText value="#{item.direccion1}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.fecha}" filterBy="#{item.fecha}" filterMatchMode="contains">
+                            <f:facet name="header">Fecha de creación</f:facet>
+                            <h:outputText value="#{item.fecha}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.fechaEntrega}" filterBy="#{item.fechaEntrega}" filterMatchMode="contains">
+                            <f:facet name="header">Fecha entrega</f:facet>
+                            <h:outputText value="#{item.fechaEntrega}"/>
+                        </p:column>                        
+                        <p:column width="70">
+                            <p:commandButton id="ver" icon="ui-icon-search" styleClass="boton-primeVerdePequeno" action="#{pedidoController.prepareVerHistorial}" ajax="false">
+                                <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoUnoee}"/>
+                            </p:commandButton>
+                            <p:tooltip for="ver" value="Ver"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

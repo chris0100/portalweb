@@ -1,0 +1,400 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+                
+                
+               <ul class="nav navbar-nav">
+                   
+                    <li class="active" style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                   
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                   
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                   
+                   
+                   <!--Barra lateral izquierda de ayuda-->
+                    <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+                            <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                            
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                        
+                    </li>
+                   
+                   
+                   
+                   
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{certificadoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                   
+                </ul>
+            </h:form>
+        </ui:define>
+        
+        
+        <!--Body que muestra contenido al cliente-->
+        <ui:define name="body" >
+            <h:form>
+                <div class="row"> 
+                    
+                    
+                    <div class="col-md-12">
+                        <div class="btn-ayuda" style="font-size: 1.3em; color:white !important;border-radius: 10px !important">
+                            <h4 style="color:white !important; padding: 2px !important">
+                                <a data-toggle="collapse" style="color: white !important;" href="#collapse1">¿Cómo inicio sesión por primera vez al portal web?</a>
+                            </h4>
+                        </div>
+                    </div>   
+                    
+                    
+                    
+                    <div class="col-md-12">
+                        <div id="collapse1" class="panel-collapse collapse" style="padding-left: 10px !important; font-size: 1.2em">
+                            <div class="panel-body row" >
+                                <div class="col-md-5">
+                                    Para iniciar sesión por primera al portal web:
+                                    <div style="margin-left: 10px">
+                                        <strong>1. </strong>Asegúrate que tengas esta opción disponible comunicándote con tu asesor comercial.
+                                        <br></br> 
+                                        <strong>2. </strong>Ingresa a la pagina web www.ekazipper.com en el enlace de portal web.
+                                        <br></br>
+                                        <strong>4. </strong>En el formulario de acceso ingresa la siguiente información:
+                                    </div>
+                                    <div style="margin-left: 25px">
+                                        <strong>Nit: </strong>ingresa el nit de la empresa sin dígito de verificación
+                                        <br></br>
+                                        <strong>Sucursal: </strong> Selecciona la sucursal a la que perteneces.
+                                        <br></br>
+                                        <strong>Punto de envío:</strong> Selecciona el punto de envío a donde llegaran tus pedidos.
+                                        <br></br>
+                                        <strong>Contraseña:</strong> ingresar de nuevo el nit de la empresa, el sistema luego pedirá cambio de contraseña.
+                                        <br></br>
+                                        Haz clic en el botón de <strong>acceder</strong>.
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <img src="#{request.contextPath}/resources/ayuda/iniciarsession.gif" class="gif-ayuda" alt="primer inicio" width="100%"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="col-md-12">
+                        <div class="btn-ayuda" style="font-size: 1.3em; color:white !important;border-radius: 10px !important">
+                            <h4 style="color:white !important; padding: 2px !important">
+                                <a data-toggle="collapse" style="color: white !important" href="#collapse2">¿Cómo puedo cambiar mis datos de acceso?</a>
+                            </h4>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="col-md-12">
+                        <div id="collapse2" class="panel-collapse collapse" style="padding-left: 10px !important; font-size: 1.2em">
+                            <div class="panel-body row" >
+                                <div class="col-md-8">
+                                    <h3 style="margin-top: 0 !important">Cambiar datos de acceso</h3>
+                                    Para cambiar los datos de acceso del portal web si ya iniciaste sesión:
+                                    <div style="margin-left: 10px">
+                                        <strong>1. </strong> Haz clic en el icono <i class="fa fa-cog"></i> ubicado en la esquina superior derecha de cualquier pagina del portal.
+                                        <br></br> 
+                                        <strong>2. </strong> En el formulario de actualización de datos de acceso puedes actualizar la siguiente información:
+                                    </div>
+                                    <div style="margin-left: 25px">
+                                        <strong>Nombre del responsable: </strong> aquí se debe registrar el nombre de la persona encargada de realizar los pedidos.
+                                        <br></br>
+                                        <strong>Correo corporativo del responsable: </strong> se debe ingresar el correo donde quieres que se envíen las notificaciones de pedidos creados.
+                                        <br></br>
+                                        <strong>Contraseña de ingreso: </strong> se registra la contraseña de acceso a la plataforma.
+                                        <br></br>
+                                        Haz clic en el botón de <strong>Actualizar datos</strong>.
+                                    </div>
+                                    <h3>Restablecer contraseña</h3>
+                                    Para restablecer la contraseña si no iniciaste sesión en el portal web:
+                                    <div style="margin-left: 10px">
+                                        <strong>1. </strong> Ve al enlace de ¿Contraseña olvidada?.
+                                        <br></br> 
+                                        <strong>2. </strong> Escribe el Nit, sucursal, punto de envío y correo electrónico, y haz clic en recuperar.
+                                        <br></br> 
+                                        <strong>3. </strong> Sigue las instrucciones que aparecen en pantalla.
+                                        <br></br> 
+                                    </div>
+                                    Si sigues teniendo problemas, comunícate con tu asesor comercial.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="col-md-12" jsf:rendered="#{loginController.cliente}">
+                        <div class="btn-ayuda" style="font-size: 1.3em; color:white !important;border-radius: 10px !important">
+                            <h4 style="color:white !important; padding: 2px !important">
+                                <a data-toggle="collapse" style="color: white !important" href="#collapse3">¿Cómo hacer un pedido?</a>
+                            </h4>
+                        </div> 
+                    </div>
+                    
+                    
+                    
+                    <div class="col-md-12">
+                        <div id="collapse3" class="panel-collapse collapse" style="padding-left: 10px !important; font-size: 1.2em">
+                            <div class="panel-body row" >
+                                <div class="col-md-8">
+                                    <h3 style="margin-top: 0 !important">Creación de pedidos</h3>
+                                    Para crear pedidos en el portal web:
+                                    <div style="margin-left: 10px">
+                                        <strong>1. </strong> Haz clic en <strong>Gestión de pedidos / Crear nuevo pedido </strong>en el menú izquierdo de la pantalla.
+                                        <br></br> 
+                                        <strong>2. </strong> En el formulario de creación de pedidos debes diligenciar la siguiente información.
+                                    </div>
+                                    <div style="margin-left: 25px">
+                                        <strong>Numero OC/OP: </strong>  Aquí se ingresa el código de orden de compra o producción, este campo es obligatorio y no debe contener caracteres especiales ni espacios.
+                                        <br></br>
+                                        <strong>Notas: </strong> puedes escribir información que consideres pertinente para el tramite del pedido.
+                                        <br></br>
+                                        Panel de <strong>datos de envió del pedido: </strong> se encuentra información 
+                                        inmodificable de la sucursal a facturar, sucursal a remisionar, punto
+                                        de envío, dirección de envió, vendedor y contacto del cliente. 
+                                        Si requieres actualizar esta información debes contactar a tu asesor comercial.
+                                        <br></br>
+                                        <strong>Ingresar los ítems del pedido: </strong> En este panel puedes ingresar los productos del pedidos,
+                                        si requieres información adicional de como agregar productos haz clic en el 
+                                        icono <i class="fa fa-exclamation-circle" aria-hidden="true"></i> que esta ubicado en el formulario de agregar productos.
+                                        <br></br>
+                                    </div>
+                                    Cuando termines de ingresar los productos del pedido haz clic en <strong>Verificar datos del pedido</strong>.
+                                    <br></br><br></br>
+                                    <div class="form-group col-md-12">
+                                        <img src="#{request.contextPath}/resources/ayuda/crearpedido.gif" class="gif-ayuda" alt="primer inicio" width="100%"/>
+                                    </div>
+                                    <br></br><br></br>
+                                    <h3>Verificar datos del pedido</h3>
+                                    En esta pagina puedes verificar toda la información del pedido sin poderla modificar. En la parte de abajo de la pantalla están disponibles tres opciones:
+                                    <div style="margin-left: 10px">
+                                        <strong>Volver a editar:  </strong> Si quieres modificar el pedido puedes devolverte al formulario de creación del pedido y realizar las modificaciones necesarias.
+                                        <br></br> 
+                                        <strong>Guardar borrador: </strong> En esta opción el pedido se guarda sin haberlo aprobado y podrás modificarlo cuando desees.
+                                        <br></br> 
+                                        <strong>Aprobar pedido: </strong> Una vez el pedido sea aprobado, se envía un correo de notificación al 
+                                        correo registrado, y estará listo para ser entregado según los tiempos acordados, 
+                                        en este estado el pedido no podrá modificarse.
+                                        <br></br> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="col-md-12" jsf:rendered="#{loginController.cliente}">
+                        <div class="btn-ayuda" style="font-size: 1.3em; color:white !important;border-radius: 10px !important">
+                            <h4 style="color:white !important; padding: 2px !important">
+                                <a data-toggle="collapse" style="color: white !important" href="#collapse4">¿Cómo consultar los pedidos realizados?</a>
+                            </h4>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="col-md-12">
+                        <div id="collapse4" class="panel-collapse collapse" style="padding-left: 10px !important; font-size: 1.2em">
+                            <div class="panel-body row" >
+                                <div class="col-md-5">
+                                    <h3 style="margin-top: 0 !important">Historial de pedidos</h3>
+                                    Para consultar los pedidos realizados:
+                                    <div style="margin-left: 10px">
+                                        <strong>1. </strong> Haz clic en <strong>Gestión de pedidos / Historial de pedidos</strong>.
+                                        <br></br> 
+                                        <strong>2. </strong> Debes filtrar por fecha de inicio del reporte y fecha fin del reporte para cargar los pedidos creados en un rango determinado de fechas.
+                                        <br></br> 
+                                        <strong>3. </strong> Haz clic en <strong>consultar</strong> para procesar la información.
+                                        <br></br> 
+                                        <strong>4. </strong> Puedes ver el detalle del pedido en el icono <i class="fa fa-search" aria-hidden="true"></i> ubicado al lado derecho de la tabla de pedidos.
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <img src="#{request.contextPath}/resources/ayuda/historialpedido.gif" class="gif-ayuda" alt="primer inicio" width="100%"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="col-md-12" jsf:rendered="#{loginController.cliente}">
+                        <div class="btn-ayuda" style="font-size: 1.3em; color:white !important;border-radius: 10px !important">
+                            <h4 style="color:white !important; padding: 2px !important">
+                                <a data-toggle="collapse" style="color: white !important" href="#collapse5">¿Cómo puedo modificar un pedido?</a>
+                            </h4>
+                        </div>
+                   </div>
+                    
+                    
+                    <div class="col-md-12">
+                        <div id="collapse5" class="panel-collapse collapse" style="padding-left: 10px !important; font-size: 1.2em">
+                            <div class="panel-body row" >
+                                <div class="col-md-5">
+                                    <h3 style="margin-top: 0 !important">Modificación de pedidos</h3>
+                                    Para modificar un pedido:
+                                    <div style="margin-left: 10px">
+                                        <strong>1. </strong> Haz clic en <strong>Gestión de pedidos / Pedidos en borrador</strong>.
+                                        <br></br> 
+                                        <strong>2. </strong> Haz clic en el botón de edición <i class="fa fa-pencil" aria-hidden="true"></i> para modificar los datos del pedido.
+                                        <br></br> 
+                                        <strong>3. </strong> Modificar el pedido.
+                                        <br></br> 
+                                        <strong>4. </strong> Haz clic en <strong>Verificar datos del pedido</strong>.
+                                    </div>
+                                    <br></br>
+                                    <i class="fa fa-warning" aria-hidden="true"></i> Solo se pueden modificar los pedidos que están en estado borrador.
+                                </div>
+                                <div class="col-md-7">
+                                    <img src="#{request.contextPath}/resources/ayuda/editarpedido.gif" class="gif-ayuda" alt="primer inicio" width="100%"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="col-md-12" jsf:rendered="#{loginController.proveedor}">
+                        <div class="btn-ayuda" style="font-size: 1.3em; color:white !important;border-radius: 10px !important">
+                            <h4 style="color:white !important; padding: 2px !important">
+                                <a data-toggle="collapse" style="color: white !important" href="#collapse6">¿Cómo descargar certificados de proveedores?</a>
+                            </h4>
+                        </div>
+                   </div>
+                    
+                    
+                    
+                    <div class="col-md-12">
+                        <div id="collapse6" class="panel-collapse collapse" style="padding-left: 10px !important; font-size: 1.2em">
+                            <div class="panel-body row" >
+                                <div class="col-md-5">
+                                    <h3 style="margin-top: 0 !important">Certificados de proveedores</h3>
+                                    Para descargar un certificado.
+                                    <div style="margin-left: 10px">
+                                        <strong>1. </strong> Haz clic en <strong>Certificados proveedores</strong>.
+                                        <br></br> 
+                                        <strong>2. </strong> Seleccionar el tipo de certificado a descargar.
+                                        <br></br> 
+                                        <strong>3. </strong> Ingresar el año grabable.
+                                        <br></br> 
+                                        <strong>4. </strong> Si aplica se debe poner el periodo a generar.
+                                        <br></br> 
+                                        <strong>5. </strong> Clic en generar PDF.
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <img src="#{request.contextPath}/resources/ayuda/certificado.gif" class="gif-ayuda" alt="primer inicio" width="100%"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="col-md-12" jsf:rendered="#{loginController.servicioCliente}">
+                        <div class="btn-ayuda" style="font-size: 1.3em; color:white !important;border-radius: 10px !important">
+                            <h4 style="color:white !important; padding: 2px !important">
+                                <a data-toggle="collapse" style="color: white !important" href="#collapse7">Como verificar pedidos con errores</a>
+                            </h4>
+                        </div>
+                    </div>
+                    
+                    
+                    <!--Valida con el rendered que este funcionando-->
+                    <div class="col-md-12" jsf:rendered="#{loginController.servicioCliente}">
+                        <div id="collapse7" class="panel-collapse collapse" style="padding-left: 10px !important; font-size: 1.2em">
+                            <div class="panel-body row" >
+                                <div class="col-md-8">
+                                    <h3 style="margin-top: 0 !important">Verificar pedidos con errores</h3>
+                                    <div style="margin-left: 10px">
+                                        <strong>1. </strong> Haz clic en el boton <i class="menu-icon fa fa-warning"></i> <strong>Lista de errores</strong>.
+                                        <br></br> 
+                                        <strong>2. </strong> En la lista aparecen los pedidos de tus clientes que tienen errores.
+                                        <br></br> 
+                                        <strong>3. </strong> Para ver en detalle la información del pedido debes dar clic en el boton <i class="fa fa-search" aria-hidden="true"></i> (Ver).
+                                        <br></br> 
+                                        <strong>4. </strong> Al ingresar en el detalle del pedido, se muestra un mensaje de color rojo con el detalle del error.
+                                        <br></br> 
+                                        <strong>5. </strong> Para saber que ítem o ítems tienen errores, se debe dar clic en  el botón de <strong>Sincronizar ítems</strong>.
+                                        <br></br> 
+                                        <strong>5. </strong> Una vez sincronizados los ítems, puedes ver si tienen creadas las listas de materiales - LM, listas de precios - LP, portafolios - POR o si el ítem esta creado en el UnoEE - IE.
+                                        <br></br> 
+                                        <strong>6. </strong> Al lado izquierdo de cada ítem están habilitadas las opciones de editar ítem, eliminar ítem o enviar solicitud de creación de ítem al modulo de Eureka.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

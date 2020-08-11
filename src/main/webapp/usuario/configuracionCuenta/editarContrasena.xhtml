@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">
+            Formulario de actualización de datos de acceso
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li class="active" style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                    <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li jsf:rendered="#{loginController.pedidoEcuador}">
+                                <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear pedido ecuador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </h:form>
+        </ui:define>
+        <ui:define name="body" >
+            <div>
+                <div class="row">
+                    <div class="col-md-6">
+                       <h:form>
+                            <div class="form-group">        
+                                <h:outputLabel value="Contraseña de ingreso:"  />   
+                                <p:password class="form-control" id="contra1InputText" required="true" feedback="true"
+                                                      requiredMessage="Por favor ingrese una contraseña"
+                                                      value="#{usuarioController.usuarioActual.contrasena}" maxlength="10"
+                                                      match="contra2InputText"
+                                                      promptLabel="La contraseña debe contener mínimo 8 caracteres y máximo 10 caracteres también debe contener un numero y un carácter especial"
+                                                      validatorMessage="La contraseña debe contener mínimo 8 caracteres y máximo 10 caracteres también debe contener un numero y un carácter especial" weakLabel="Baja" goodLabel="Media" strongLabel="Alta">
+                                            <f:validateLength minimum="8" maximum="10"/>
+                                            <f:validateRegex pattern="(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$" />
+                                </p:password>
+                                <p:message id="contra1Message" for="contra1InputText" />
+                            </div>  
+                            <div class="form-group">        
+                                <h:outputLabel value="Repetir contraseña:"  />   
+                                <p:password class="form-control" id="contra2InputText" required="true"
+                                                      requiredMessage="Por favor ingrese una contraseña"
+                                                      value="#{usuarioController.usuarioActual.contrasena}" maxlength="10"
+                                                      validatorMessage="Las contraseñas no son iguales">
+                                </p:password>
+                                <p:message id="contra2Message" for="contra2InputText" />
+                            </div>        
+                            <div class="row">
+                                <div class="col-sm-6 form-group">    
+                                    <p:button styleClass="boton-primeRojo" 
+                                        value="Cancelar" 
+                                        outcome="editar"
+                                        icon="fa fa-arrow-left"/>
+                                </div>
+                                <div class="col-sm-6 form-group">
+                                    <p:commandButton class="boton-prime"
+                                            ajax="false"
+                                            value="Guardar contraseña"
+                                            action="#{usuarioController.prepareEdit}"
+                                            onclick="onSubmitButton();"/>
+                                </div>
+                            </div>
+                        </h:form>   
+                    </div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>
+

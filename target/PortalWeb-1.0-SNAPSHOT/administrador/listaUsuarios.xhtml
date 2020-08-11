@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">Gestión de usuarios</ui:define> 
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   <li class="active" jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                    <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li jsf:rendered="#{loginController.pedidoEcuador}">
+                                <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear pedido ecuador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </h:form>
+        </ui:define> 
+        <ui:define name="body">
+            <p:growl id="growl" showDetail="true" life="2000"/>
+            <h:form id="documentosFormList">
+                <p:outputPanel id="documentosTablePanel">
+                    <p:dataTable value="#{usuarioController.listaUsuarios}" var="item"
+                                 rows="50" id="documentosTable" paginator="true"
+                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="50, 100,150">
+                        <f:facet name="header">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <p:button icon="ui-icon-arrowthick-1-w"
+                                                value="Volver pagina principal" 
+                                                style="font-size: 1.2em !important; padding: 5px; left: 0"
+                                                outcome="/usuario/dashboard.xhtml"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h4 class="colorLetra" style="font-weight: bold" >
+                                            Total de usuarios: #{fn:length(usuarioController.listaUsuarios)}
+                                        </h4>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:commandButton icon="ui-icon-folder-open"
+                                                         ajax="false"
+                                                        value="Crear nuevo usuario"
+                                                        style="font-size: 1.2em !important;padding: 5px; right: 0"
+                                                        action="#{usuarioController.prepareCreate}"/>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <h:commandLink id="exportExcel">
+                                            <p:graphicImage library="images" name="/icons/logoExcel.png" width="40"/>
+                                            <p:dataExporter type="xls" postProcessor="#{exportarTable.postProcessXLS}"
+                                                    target="documentosTable" fileName="tabla" />
+                                        </h:commandLink>
+                                        <p:tooltip id="descripcion-exportExcel" for="exportExcel" value="Exportar tabla en formato .xls" trackMouse="true"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </f:facet>
+                        <p:column filterBy="#{item.nombre}" filterMatchMode="contains">
+                            <f:facet name="header">Nombre responsable</f:facet>
+                            <h:outputText style="font-weight: bold" value="#{item.nombre.toUpperCase()}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.nit}" filterMatchMode="contains">
+                            <f:facet name="header">nit/identificación</f:facet>
+                            <h:outputText value="#{item.nit}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.cliente}" filterMatchMode="contains">
+                            <f:facet name="header">Razón social</f:facet>
+                            <h:outputText value="#{item.cliente}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.correo}" filterMatchMode="contains">
+                            <f:facet name="header">Correo electronico </f:facet>
+                            <h:outputText value="#{item.correo.toUpperCase()}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.username}" filterMatchMode="contains">
+                            <f:facet name="header">Nombre de usuario</f:facet>
+                            <h:outputText value="#{item.username}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.descripcionSucursal}" filterMatchMode="contains">
+                            <f:facet name="header">Sucursal</f:facet>
+                            <h:outputText value="#{item.idSucursal}"/> -
+                            <h:outputText value="#{item.descripcionSucursal}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.descripcionPuntoEnvio}" filterMatchMode="contains">
+                            <f:facet name="header">Punto de envío</f:facet>
+                            <h:outputText value="#{item.idPuntoEnvio}"/> -
+                            <h:outputText value="#{item.descripcionPuntoEnvio}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Rol</f:facet>
+                            <p:dataList styleClass="noBorders" value="#{item.t002RolList}" var="rol" >
+                                #{rol.idRol.toUpperCase()} - #{rol.nombre.toUpperCase()}
+                            </p:dataList>
+                        </p:column>
+                        <p:column width="60">
+                            <p:commandButton ajax="false" icon="ui-icon-pencil" id="actualizar" action="#{usuarioController.prepareEditAdmin}" >
+                                <f:setPropertyActionListener value="#{item}" target="#{usuarioController.usuarioActual}"/>
+                            </p:commandButton>
+                            <p:tooltip id="descripcion-botonActualizacion" for="actualizar" value="Actualizar usuario" trackMouse="true" />
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

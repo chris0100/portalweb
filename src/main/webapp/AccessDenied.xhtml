@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+                <ul class="sidebar-menu">
+                    <h:panelGroup>
+                         <li style="margin-top: 20px">
+                             
+                        </li>
+                    </h:panelGroup>
+                </ul>
+            </h:form>
+        </ui:define>
+        <ui:define name="body" >
+            <h:form>
+                <div class="alert alert-danger">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong> ¡Acceso denegado!</strong> Su sesión ha caducado o esta intentado acceder a componentes sin los permisos necesarios, por favor vuelva a iniciar sesión.
+                </div>
+                <p:commandButton ajax="false" styleClass="btn btn-primary" value="Volver a la pagina principal"  action="index.xhtml"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+    <head jsf:id="head">
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <link rel="icon" type="image/png" href="#{request.contextPath}/resources/images/logoEkaIcon.png"/>
+        <title>Eka Corporación S.A - Portal web</title>
+        <meta name="description" content="Eka Corporación S.A - Portal web"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/cs-skin-elastic.css"/>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css"/>
+        <link href="#{request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet"/>
+        <h:outputStylesheet library="css" name="font-awesome.min.css"/>
+        <link href="#{request.contextPath}/resources/css/person.css" rel="stylesheet"/>
+        <link href="#{request.contextPath}/resources/css/AdminLTE.min.css" rel="stylesheet"/>
+        <script src="https://www.google.com/recaptcha/api.js"></script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-159716710-2"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-159716710-2');
+        </script>
+    </head>
+    <body jsf:id="body">
+        
+        
+        <aside id="left-panel" class="left-panel" jsf:rendered="#{loginController.authenticated}">
+            <nav class="navbar navbar-expand-sm navbar-default" style="border: none !important">
+                <div id="main-menu" class="main-menu collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <ui:insert name="menu">
+                        
+                        </ui:insert>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+        
+        
+        
+        <div id="right-panel" class="right-panel">
+            
+            <h:form>
+                <header id="header" class="header header-sombra">
+                    <div class="top-left">
+                        
+                        <div class="navbar-header">
+                            
+                            
+                            <h:panelGroup rendered="#{!loginController.authenticated}">
+                                <a class="navbar-brand" href="#{request.contextPath}/faces/index.xhtml"><img style="width: 100%" src="#{request.contextPath}/resources/images/logo.png" alt="Logo"/></a>
+                                <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"/></a>
+                                <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
+                            </h:panelGroup>
+                            
+                            <h:panelGroup rendered="#{loginController.authenticated}">
+                                <a class="navbar-brand" href="#{request.contextPath}/faces/usuario/dashboard.xhtml"><img style="width: 100%" src="#{request.contextPath}/resources/images/logo.png" alt="Logo"/></a>
+                                <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"/></a>
+                                <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
+                            </h:panelGroup>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="top-right">
+                        <div class="header-menu">
+                            <h:panelGroup >
+                                
+                                <div class="header-left">
+                                    <li jsf:rendered="#{loginController.authenticated}" class="dropdown user user-menu" style="margin-right:20px !important">
+                                        <p style="color: grey !important; font-size: 1em !important; margin-top: 19px !important;"> 
+                                            <ui:insert name="name">#{loginController.userLogueado.idPuntoEnvio} <span style="font-weight: bold" 
+                                               jsf:rendered="#{loginController.cliente || loginController.servicioCliente}">|</span>  #{loginController.userLogueado.nombre.toUpperCase()} 
+                                               <span style="font-weight: bold" jsf:rendered="#{loginController.cliente || loginController.servicioCliente}">|</span> 
+                                               #{loginController.userLogueado.descripcionSucursal}</ui:insert> 
+                                        </p>
+                                    </li>
+                                </div>
+                                
+                                
+                                <div class="header-left">
+                                    
+                                    <!--Ayuda-->
+                                    <li class="dropdown user user-menu">
+                                        <h:commandLink class="btn btn-secondary dropdown-toggle header-botones" action="#{loginController.prepareAyuda}">
+                                            <i class="fa fa-question-circle"></i>
+                                        </h:commandLink>
+                                    </li>
+                                    
+                                    <!--configuracion-->
+                                    <li class="dropdown user user-menu">
+                                        <h:commandLink class="btn btn-secondary dropdown-toggle header-botones" 
+                                                       action="#{usuarioController.prepareEdit}" rendered="#{loginController.authenticated}">
+                                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{usuarioController.usuarioActual}"/>
+                                            <i class="fa fa-cog"></i>
+                                        </h:commandLink>
+                                    </li>
+                                    
+                                    
+                                    <!--Cerrar la sesion-->
+                                    <li class="dropdown user user-menu">
+                                        <p:commandLink class="btn btn-secondary dropdown-toggle header-botones" action="#{loginController.logout}" 
+                                                       ajax="false" id="salir" rendered="#{loginController.authenticated}">
+                                            <i class="fa fa-sign-out"></i>  
+                                        </p:commandLink>
+                                    </li>
+                                    
+                                </div>
+                                
+                                
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </header>
+            </h:form>
+            
+            
+            <!--Aqui va el contenido que se desee enlazar-->
+            <div class="content">
+                <div class="animated fadeIn">
+                    
+                    <section class="content-header">
+                        <h2 style="margin-top: 0 !important ">
+                          <ui:insert name="title"></ui:insert>
+                          <small><ui:insert name="title2"></ui:insert></small>
+                        </h2>
+                    </section>
+                    
+                    <section class="content">
+                        <ui:insert name="body">
+                            Default Body
+                        </ui:insert> 
+                    </section>
+                    
+                </div>
+            </div>
+            
+            
+            
+            <div class="clearfix"></div>
+            
+            
+            <footer class="site-footer" style="margin-bottom: -100px !important">
+                <div class="footer-inner bg-white">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            Copyright &copy; 2020 Eka Corporación S.A.<br></br>
+                            <h:form>
+                                Ver <p:commandLink value="Términos y condiciones" style="font-size: 1em !important; font-weight: bold !important" oncomplete="PF('condiciones').show()" />
+                                <p:dialog widgetVar="condiciones"  position="center center" modal="true" width="900" height="500">
+                                    <ui:include src="/terminosCondiciones.xhtml" />
+                                </p:dialog>
+                            </h:form>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            Desarrollado por el proceso de TI
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        
+        
+        
+        
+        <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+        <script src="#{request.contextPath}/resources/js/main.js"></script>
+        <script src="#{request.contextPath}/resources/js/weather-init.js"></script>
+        <script src="#{request.contextPath}/resources/js/fullcalendar-init.js"></script>
+    </body>
+</html>

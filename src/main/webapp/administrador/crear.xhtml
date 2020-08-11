@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">Gestión de usuarios</ui:define> 
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                    <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li jsf:rendered="#{loginController.pedidoEcuador}">
+                                <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear pedido ecuador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </h:form>
+        </ui:define>   
+        <ui:define name="body">
+            <p:growl id="growl" showDetail="true" life="2000"/>
+            <h:form>
+                <div class="form-group">
+                    <h:outputLabel value="Nombre:"  />
+                    <input class="form-control" jsf:id="nomUsuarioInputText" jsf:value="#{usuarioController.usuarioActual.nombre}" 
+                           type="text" required="true" placeholder="Nombres"
+                                 jsf:requiredMessage="Por favor ingrese el nombre del usuario"
+                                 jsf:validatorMessage="Use solo letras, ej: Luis"> 
+                                 <f:validateRegex pattern="[a-zA-Z áéíóúÁÉÍÓÚÑñ]*"/>
+                                 <f:ajax execute="@this" render="nomUsuarioMessage"/>
+                    </input>
+                    <p:message id="nomUsuarioMessage" for="nomUsuarioInputText"/>
+                </div>
+                <div class="form-group">
+                    <h:outputLabel value="Nit/identificación:"  />
+                    <input class="form-control" jsf:id="nitInputText" jsf:value="#{usuarioController.usuarioActual.nit}" 
+                           type="text" required="true" placeholder="Nombres"
+                            jsf:requiredMessage="Por favor ingrese el nit">
+                            <f:ajax execute="@this" render="nitMessage"/>
+                    </input>
+                    <p:message id="nitMessage" for="nitInputText"/>
+                </div>
+                <p:separator />
+                <div class="form-group">
+                    <h:outputLabel value="Rol:" for="rolInputText" />
+                    <p:selectManyCheckbox layout="grid" columns="1" id="rolInputText" value="#{usuarioController.listaRol}"
+                                          converter="rolConverter">
+                        <f:selectItems value="#{rolController.itemsAvailableSelectOne}"
+                                       var="rol"
+                                       itemValue="#{rol}"/>
+                        <f:ajax execute="@this" render="rolMessage"/>
+                    </p:selectManyCheckbox>
+                </div>
+                <div class="form-group">
+                    <h:outputLabel value="Email:"  />
+                    <input class="form-control" type="text" jsf:id="correoInputText" 
+                           jsf:value="#{usuarioController.usuarioActual.correo}" placeholder="Correo corporativo"
+                           jsf:validatorMessage="Dirección de correo electronico no valido">
+                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]*"/>
+                        <f:ajax execute="@this" render="correoMessage"/>
+                    </input>
+                    <p:message id="correoMessage" for="correoInputText"/>
+                </div>
+                <div class="form-group">
+                    <h:outputLabel value="Username:"  />
+                    <input class="form-control" type="text" jsf:id="usernameInputText" 
+                           jsf:value="#{usuarioController.usuarioActual.username}"
+                           jsf:validator="#{usuarioController.validarUserName}" placeholder="Nombre de usuario"
+                           jsf:validatorMessage="nombre de usuario no valido">
+                        <f:ajax execute="@this" render="usernameMessage"/>
+                    </input>
+                    <p:message id="usernameMessage" for="usernameInputText"/>
+                </div>
+                <div class="form-group">        
+                    <h:outputLabel value="Contraseña:"  />   
+                    <p:password class="form-control" id="contra1InputText" required="true"
+                                          requiredMessage="Por favor ingrese una contraseña"
+                                          value="#{usuarioController.usuarioActual.contrasena}" maxlength="10"
+                                          match="contra2InputText"
+                                          validatorMessage="Las contraseñas no coinciden">
+                    </p:password>
+                    <p:message id="contra1Message" for="contra1InputText" />
+                </div>                
+                 <div class="form-group">        
+                    <h:outputLabel value="Repetir contraseña:"  />   
+                    <p:password class="form-control" id="contra2InputText" required="true"
+                                          requiredMessage="Por favor ingrese una contraseña"
+                                          value="#{usuarioController.usuarioActual.contrasena}" maxlength="10">
+                    </p:password>
+                    <p:message id="contra2Message" for="contra2InputText" />
+                </div>
+                <div class="form-group">
+                    <h:outputLabel value="Solicitar cambio de clave al ingresar: "  />
+                    <p:selectBooleanCheckbox value="#{usuarioController.usuarioActual.primerLogin}" /> 
+                </div>
+                <div class="col-sm-4 form-group">
+                    <p:commandButton class="boton-prime"
+                            ajax="false"
+                            value="Guardar usuario"
+                            action="#{usuarioController.addUsuario}"
+                            onclick="onSubmitButton();"/>
+                </div>
+                <div class="col-sm-4 form-group">    
+                    <p:button class="boton-primeRojo" value="Cancelar" outcome="listaUsuarios"/>
+                </div>
+                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

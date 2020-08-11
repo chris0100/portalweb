@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">
+            Lista de pedidos en borrador
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                    <li class="menu-item-has-children dropdown active" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li jsf:rendered="#{loginController.pedidoEcuador}">
+                                <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear pedido ecuador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                   
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                   
+                   
+                   <li jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </h:form>
+        </ui:define>
+        <ui:define name="body" >
+            <p:growl id="growl" showDetail="true" life="2000"/>
+            <h:form id="documentosFormList">
+               <p:outputPanel id="documentosTablePanel">
+                   <p:dataTable value="#{pedidoController.listaPedidoElaboracionNit}" var="item"
+                                rows="50" id="documentosTable" paginator="true"
+                                selectionMode="single" selection="#{pedidoController.pedidoActual}" rowKey="#{item.idPedido}"
+                                paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rowsPerPageTemplate="50, 100,150">
+                       <p:ajax event="rowSelect" oncomplete="PF('itemDialog').show()" update=":documentosFormList:detalle" />
+                       <f:facet name="header">
+                           <div class="container-fluid">
+                               <div class="row">
+                                   <div class="col-md-8">
+                                       <h4 style="font-weight: bold; text-align: left" >
+                                           Total de pedidos en borrador: #{fn:length(pedidoController.listaPedidoElaboracionNit)}
+                                       </h4>
+                                   </div>
+                                   <div class="col-md-4">
+                                       
+                                   </div>
+                               </div>
+                           </div>
+                       </f:facet>
+                       <p:column filterBy="#{item.idPedido}"  filterMatchMode="contains">
+                           <f:facet name="header">Código</f:facet>
+                           <h:outputText style="font-weight: bold" value="#{item.idPedido}"/>
+                       </p:column>
+                       <p:column filterBy="#{item.oc}"  filterMatchMode="contains">
+                           <f:facet name="header">Orden de compra</f:facet>
+                           <h:outputText style="font-weight: bold" value="#{item.oc}"/>
+                       </p:column>
+                       <p:column filterBy="#{item.idUsuario.toString()}" filterMatchMode="contains">
+                           <f:facet name="header">Usuario pedido</f:facet>
+                           <h:outputText style="font-weight: bold" value="#{item.idUsuario.toString()}"/>
+                       </p:column>
+                       <p:column filterBy="#{item.nota}" filterMatchMode="contains">
+                           <f:facet name="header">Notas.</f:facet>
+                           <h:outputText value="#{item.nota}"/>
+                       </p:column>
+                       <p:column filterBy="#{item.sucursalFacturar}" filterMatchMode="contains">
+                           <f:facet name="header">Sucursal a facturar</f:facet>
+                           <h:outputText value="#{item.sucursalFacturar}"/>
+                       </p:column>
+                       <p:column filterBy="#{item.sucursalRemisionar}" filterMatchMode="contains">
+                           <f:facet name="header">Sucursal a remisionar</f:facet>
+                           <h:outputText value="#{item.sucursalRemisionar}"/>
+                       </p:column>
+                       <p:column>
+                            <f:facet name="header">Fecha de pedido</f:facet>
+                            <h:outputText value="#{item.fechaPedido}">
+                                <f:convertDateTime pattern="dd/MM/YYYY HH:mm"/>
+                            </h:outputText>
+                       </p:column>
+                       <p:column filterBy="#{item.estadoString}" filterMatchMode="contains">
+                           <f:facet name="header">Estado</f:facet>
+                           <h:outputText value="#{item.estadoString}"/>
+                       </p:column>
+                       <p:column width="150">
+                           <p:commandButton icon="ui-icon-pencil" id="editar" styleClass="boton-primeAzulPequeno" ajax="false" action="#{pedidoController.prepareEdit}" >
+                                <f:attribute name="item" value="#{item}"/>
+                                <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoActual}"/>
+                            </p:commandButton>
+                            <p:tooltip for="editar" value="Editar"/>
+                            <p:commandButton id="ver" icon="ui-icon-search" styleClass="boton-primeVerdePequeno" action="#{pedidoController.prepareVer}" ajax="false">
+                                <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoActual}"/>
+                            </p:commandButton>
+                            <p:tooltip for="ver" value="Ver"/>
+                            <a href="listaElaboracion.xhtml"></a>
+                            <p:commandButton id="borrar" icon="ui-icon-trash" styleClass="boton-primeRojoPequeno" update="documentosTable" oncomplete="PF('dlg1').show();" immediate="true">
+                                <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoActual}"/>
+                            </p:commandButton>
+                            <p:tooltip for="borrar" value="Borrar"/>
+                        </p:column>
+                    </p:dataTable>
+                   <p:dialog header="Ítems del pedido" widgetVar="itemDialog" closeOnEscape="true" resizable="true" width="800" height="60%" modal="true">
+                        <h:panelGroup id="detalle">
+                            <div class="container-fluid">
+                                <div class="row" style="font-size: 1.2em">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <h:outputLabel value="Número OC/OP:"/>
+                                            <br></br>
+                                            <h:outputLabel value="#{pedidoController.pedidoActual.oc}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                         <div class="form-group">
+                                            <h:outputLabel value="Usuario de creación:"/>
+                                            <br></br>
+                                            <h:outputLabel value="#{pedidoController.pedidoActual.idUsuario.toString()}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p:dataTable  id="tablaFuncion"
+                                          emptyMessage="No se encontraron registros"
+                                          value="#{pedidoController.listaItemPedido}" 
+                                          var="item"
+                                          style="font-size: 1.2em !important">
+                                <p:column headerText="Código del cliente" width="100">
+                                    <h:outputText value="#{item.codCliente}" style="font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="Código eka" >
+                                    <h:outputText value="#{item.codItem}" style="font-weight: bold"/>
+                                </p:column>
+                                <p:column headerText="Descripción">
+                                    <h:outputText value="#{item.descripcion}"/>
+                               </p:column>
+                                <p:column headerText="Extensión 1">
+                                    <h:outputText value="#{item.descripcionExt1}"/>
+                               </p:column>
+                                <p:column headerText="Extensión 2" >
+                                    <h:outputText value="#{item.descripcionExt2}"/>
+                               </p:column>
+                                <p:column headerText="Cantidad" >
+                                    <h:outputText value="#{item.cantidad}">
+                                        <f:convertNumber type="currency"
+                                                         currencySymbol=""
+                                                         maxFractionDigits="2"/>
+                                    </h:outputText>
+                               </p:column>
+                                <p:column headerText="U. medida" >
+                                    <h:outputText value="#{item.unidadMedida}"/>
+                               </p:column>
+                            </p:dataTable>
+                            <br></br>
+                            <div class="form-group" style="font-size: 1.2em">
+                                <h:outputLabel value="Nota:"/>
+                                <br></br>
+                                <h:outputLabel  value="#{pedidoController.pedidoActual.nota}" />
+                            </div>
+                        </h:panelGroup>
+                    </p:dialog>
+                </p:outputPanel>
+            </h:form>
+            <p:dialog id="dlg" widgetVar="dlg1" header="Eliminar" modal="true" resizable="false" minWidth="160">
+                <h:form id="formEliminar">
+                    <h:outputText value="¿Desesa eliminar?" style="display: block"/>
+                    <p:commandButton value="Si" action="#{pedidoController.deletePedidoBorrador}" 
+                                     oncomplete="dlg1.hide()" ajax="false"/>
+                    <p:commandButton value="No" onclick="dlg.hide();"/>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

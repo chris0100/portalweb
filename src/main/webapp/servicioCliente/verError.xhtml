@@ -1,0 +1,384 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">
+            Detalle del pedido 
+        </ui:define>
+        <ui:define name="title2">
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                    <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </h:form>
+        </ui:define>
+        <ui:define name="body" >        
+            <p:growl id="growl" showDetail="true" life="5000" />
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Error al procesar pedido</h4>
+                <p style="color: white">El pedido no fue creado debido a problemas técnicos.</p>
+                <p style="color: white">Código del error:</p>
+                <h:outputText value="#{pedidoController.pedidoActual.mensajeWB}" escape="false"/>
+            </div>
+            <h:panelGroup id="crear-group">
+                <h:form>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <h:outputLabel value="Código pedido:"/>
+                                <h:inputText id="codigo" 
+                                             style="font-weight: bold; font-size: 1.1em; color:red !important" 
+                                             class="form-control" 
+                                             value="#{pedidoController.pedidoActual.idPedido}" 
+                                             disabled="true" 
+                                             maxlength="100">
+                                </h:inputText>
+                                <p:message id="codigoMessage" for="codigo" styleClass="error"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel value="Responsable del pedido:"/>
+                                <h:inputText id="usuario" 
+                                             style="font-weight: bold; font-size: 1.1em" 
+                                             class="form-control" 
+                                             value="#{pedidoController.pedidoActual.idUsuario.toString()}" 
+                                             disabled="true" 
+                                             maxlength="100">
+                                </h:inputText>
+                                <p:message id="usuarioMessage" for="usuario" styleClass="error"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel value="Numero OC:"/>
+                                <h:inputText id="oc"
+                                             required="true"
+                                             class="form-control" 
+                                             value="#{pedidoController.pedidoActual.oc}"
+                                             disabled="true"
+                                             maxlength="100">
+                                </h:inputText>
+                                <p:message id="ocMessage" for="oc" styleClass="error"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel value="Notas:"/>
+                                <h:inputTextarea id="nota" 
+                                                 class="form-control" 
+                                                 disabled="true"
+                                                 value="#{pedidoController.pedidoActual.nota}"
+                                                 style="height: 140px;">
+                                </h:inputTextarea>
+                                <p:message id="notaMessage" for="nota" styleClass="error"/>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="panel panel-primary form-group"  style="border-radius: 0;">
+                                <div class="panel-heading"  style="border-radius: 0"><h4 class="letra-panelDescriEdu"><i class="fa fa-truck" aria-hidden="true"></i> Datos de envío del pedido</h4></div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <h:outputLabel value="Sucursal a facturar:"/>
+                                                <h:inputText id="sucursalFact"
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.sucursalFacturar}"
+                                                             maxlength="100" 
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionSucursalFact" for="sucursalFact" styleClass="error"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h:outputLabel value="Punto de envío:"/>
+                                                <h:inputText id="puntoEnvio" 
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.puntoEnvio}"
+                                                             maxlength="100"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionPuntoEnvio" for="puntoEnvio" styleClass="error"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h:outputLabel value="Vendedor:"/>
+                                                <h:inputText id="terceroVendedor"
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.terceroVendedor}" 
+                                                             maxlength="100"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionTerceroVendedor" for="terceroVendedor" styleClass="error"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <h:outputLabel value="Sucursal a remisionar:"/>
+                                                <h:inputText id="sucursalRemi"
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.sucursalRemisionar}"
+                                                             maxlength="100"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionSucursalRemi" for="sucursalRemi" styleClass="error"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h:outputLabel value="Dirección de envío:"/>
+                                                <h:inputText id="direccionEnvio"
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.direccion}" 
+                                                             maxlength="100"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionDireccionEnvio" for="direccionEnvio" styleClass="error"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h:outputLabel value="Contacto:"/>
+                                                <h:inputText id="contacto" 
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.contacto}" 
+                                                             maxlength="100"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionContacto" for="contacto" styleClass="error"/>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </h:panelGroup>
+            <div class="panel panel-primary form-group"  style="border-radius: 0; margin-bottom: 5em">
+                <div class="panel-heading"  style="border-radius: 0"><h4 class="letra-panelDescriEdu"><i class="fa fa-cart-arrow-down" aria-hidden="true"> </i> Ítems del pedido</h4></div>
+                <div class="panel-body">
+                    <h:form>
+                        <button jsf:action="#{pedidoController.sincronizarItems}" 
+                               type="submit" style="margin-bottom: 5px" 
+                               class="submit-form btn btn-pinterest" id="myButton1">
+                            <i class="fa fa-repeat"></i> Sincronizar items
+                        </button>
+                    </h:form>
+                    <h:panelGroup id="agregarFuncion">
+                        <div class="row">
+                            <h:panelGroup class="col-md-12" id="itemsGroup">
+                                <p:dataTable  id="tablaFuncion" emptyMessage="No se encontraron registros" value="#{pedidoController.listaItemPedidoSelect}" var="item">
+                                    <p:column headerText="Código del ítem del cliente">
+                                        <h:outputText value="#{item.codCliente}" style="font-weight: bold"/>
+                                   </p:column>
+                                    <p:column headerText="Código EKA">
+                                        <h:outputText value="#{item.codItem}"/>
+                                    </p:column>
+                                    <p:column headerText="Descripción">
+                                        <h:outputText value="#{item.descripcion}"/>
+                                   </p:column>
+                                    <p:column headerText="Extensión 1">
+                                        <h:outputText value="#{item.descripcionExt1}"/>
+                                   </p:column>
+                                    <p:column headerText="Extensión 2">
+                                        <h:outputText value="#{item.descripcionExt2}"/>
+                                   </p:column>
+                                    <p:column style="text-align: center !important;">
+                                        <f:facet name="header">Cantidad</f:facet>
+                                        <h:outputText value="#{item.cantidad}">
+                                            <f:convertNumber type="currency"
+                                                             currencySymbol=""
+                                                             maxFractionDigits="2"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column style="text-align: center !important;">
+                                        <f:facet name="header">U. medida</f:facet>
+                                        <h:outputText value="#{item.unidadMedida}"/>
+                                    </p:column>
+                                    <p:column rendered="#{pedidoController.ecuador}" headerText="Precio ecuador" >
+                                        <h:outputText value="#{item.precioUnitario}"/>
+                                    </p:column>
+                                    <p:column rendered="#{pedidoController.ecuador}" headerText="Precio unoee" >
+                                        <h:outputText value="#{item.precioUnitarioUnoee}"/>
+                                    </p:column>
+                                    <p:column rendered="#{pedidoController.ecuador}" headerText="Fecha precio unoee" >
+                                        <h:outputText value="#{item.fechaActualizacionPrecioUnoee}">
+                                            <f:convertDateTime pattern="dd/MM/YYYY"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column  filterBy="#{item.idBodega}" width="50" filterMatchMode="contains">
+                                         <f:facet name="header"><h:outputLabel id="bod">BOD</h:outputLabel></f:facet>
+                                         <p:tooltip for="bod" value="Bodega"/>
+                                         <h:outputText value="#{item.idBodega}" styleClass="#{item.idBodega}"/>
+                                    </p:column>
+                                    <p:column rendered="#{!pedidoController.ecuador}" filterBy="#{item.labelLM}" width="50" filterMatchMode="contains">
+                                        <f:facet name="header"><h:outputLabel id="lm">LM</h:outputLabel></f:facet>
+                                         <p:tooltip for="lm" value="Lista materiales"/>
+                                        <h:outputText value="#{item.labelLM}" styleClass="#{item.labelLM}"/>
+                                    </p:column>
+                                    <p:column rendered="#{!pedidoController.ecuador}" filterBy="#{item.labelLP}" width="50" filterMatchMode="contains">
+                                        <f:facet name="header"><h:outputLabel id="lp">LP</h:outputLabel></f:facet>
+                                         <p:tooltip for="lp" value="Lista de precio"/>
+                                        <h:outputText value="#{item.labelLP}" styleClass="#{item.labelLP}"/>
+                                    </p:column>
+                                    <p:column rendered="#{!pedidoController.ecuador}" filterBy="#{item.labelPOR}" width="50" filterMatchMode="contains">
+                                        <f:facet name="header"><h:outputLabel id="por">POR</h:outputLabel></f:facet>
+                                         <p:tooltip for="por" value="portafolio"/>
+                                        <h:outputText value="#{item.labelPOR}" styleClass="#{item.labelPOR}"/>
+                                    </p:column>
+                                    <p:column rendered="#{!pedidoController.ecuador}" filterBy="#{item.labelItem}" width="50" filterMatchMode="contains">
+                                        <f:facet name="header"><h:outputLabel id="ie">IE</h:outputLabel></f:facet>
+                                         <p:tooltip for="ie" value="Item existente"/>
+                                        <h:outputText value="#{item.labelItem}" styleClass="#{item.labelItem}"/>
+                                    </p:column>
+                                    <p:column width="50" rendered="#{!pedidoController.ecuador}" >
+                                        <h:form style=" display: inline-block">
+                                            <p:commandButton id="editar"
+                                                             icon="fa fa-edit"
+                                                             ajax="false"
+                                                             style="margin-bottom: 2px"
+                                                             action="#{pedidoController.prepareEditItemPedido}">
+                                                <f:setPropertyActionListener value="#{item}" target="#{pedidoController.itemPedidoActual}"/>
+                                            </p:commandButton>
+                                            <p:tooltip for="editar" value="Editar item"/>
+                                            <p:commandButton id="borrar"
+                                                             icon="fa fa-trash"
+                                                             update="tablaFuncion"
+                                                             oncomplete="PF('dlg1').show();" 
+                                                             immediate="true" style="margin-bottom: 2px">
+                                                <f:setPropertyActionListener value="#{item}" target="#{pedidoController.itemPedidoActual}"/>
+                                            </p:commandButton>
+                                            <p:tooltip for="borrar" value="Borrar"/>
+                                        </h:form>
+                                        <h:form style=" display: inline-block" target="_blank">
+                                             <p:commandButton icon="fa fa-send" id="solicitar" ajax="false" action="#{pedidoController.prepareCrearItemEureka}" >
+                                                 <f:attribute name="item" value="#{item}"/>
+                                                 <f:setPropertyActionListener value="#{item}" target="#{pedidoController.itemPedidoActual}"/>
+                                            </p:commandButton>
+                                            <p:tooltip for="solicitar" value="Solicitar creación de ítem"/>
+                                        </h:form>
+                                     </p:column>
+                               </p:dataTable>
+                            </h:panelGroup>
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </div>
+            <h:form>
+                <div class="row">
+                    <div class="col-sm-4 form-group">    
+                        <p:button styleClass="boton-primeRojo" 
+                            value="Volver" 
+                            outcome="listaError"
+                            icon="fa fa-arrow-left"
+                            style="margin-top: 25px;"/>
+                    </div>
+                    <div class="col-sm-4 form-group">
+
+                    </div>
+                    <div class="col-sm-4 form-group">
+                        <button jsf:action="#{pedidoController.addPedidoError}"
+                               type="submit" 
+                               style="margin-top: 20px"
+                               class="boton-htmlVerde" 
+                               onclick="onSubmitButton();"
+                               id="myButton1">
+                            <i class="fa fa-thumbs-up"></i> Volver a enviar pedido
+                        </button>
+                    </div>
+                </div>
+            </h:form>
+            <p:dialog id="dlg" widgetVar="dlg1" header="Eliminar" modal="true" resizable="false" minWidth="160">
+                <h:form id="formEliminar">
+                    <h:outputText value="¿Desesa eliminar?" style="display: block"/>
+                    <p:commandButton value="Si" action="#{pedidoController.deleteItemPedidoGuardado}" 
+                                     oncomplete="dlg1.hide()" ajax="false" update="agregarFuncion:tablaFuncion"/>
+                    <p:commandButton value="No" onclick="dlg.hide();"/>
+                </h:form>
+            </p:dialog>
+            <div class="load"></div>
+            <script>
+                $('#myButton1').click(function(){
+                  $('#myButton1').hide();
+                  $('.load').addClass('loading');
+                    setTimeout(function () { 
+                    $('.load').removeClass('loading');
+                    $('#myButton1').show();
+
+                  }, 200000000);
+                });
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>
+
+

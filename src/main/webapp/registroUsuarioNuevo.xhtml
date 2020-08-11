@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">
+            Portal de clientes y proveedores Eka.
+        </ui:define>
+        <br></br>
+        <ui:define name="title2">
+            <span style="color: black; display: block; margin-top:10px"> ¡Bienvenido #{loginController.razonSocial}, para continuar solicitamos diligenciar la siguiente información de contacto! </span>
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+                <ul class="sidebar-menu">
+                    <h:panelGroup>
+                        <li style="margin-top: 20px">
+                             
+                        </li>
+                    </h:panelGroup>
+                </ul>
+            </h:form>
+        </ui:define>
+        <ui:define name="body" >
+            <div >
+                <div class="row">
+                    <div class="col-md-5">
+                        <h:form>
+                            <div class="form-group">
+                                <h:outputLabel value="Nombre del responsable:"  />
+                                <input class="form-control" jsf:id="nomUsuarioInputText" jsf:value="#{loginController.usuarioActual.nombre}" 
+                                       type="text" required="true" placeholder="Nombres"
+                                             jsf:requiredMessage="Por favor ingrese el nombre del usuario"
+                                             jsf:validatorMessage="Use solo letras, ej: Luis"> 
+                                             <f:validateRegex pattern="[a-zA-Z áéíóúÁÉÍÓÚÑñ]*"/>
+                                             <f:ajax execute="@this" render="nomUsuarioMessage"/>
+                                </input>
+                                <p:message id="nomUsuarioMessage" for="nomUsuarioInputText"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel value="Correo corporativo del responsable:"  />
+                                <input class="form-control" type="text" jsf:id="correoInputText" 
+                                       jsf:value="#{loginController.usuarioActual.correo}" placeholder="Correo corporativo"
+                                       jsf:validatorMessage="Dirección de correo electrónico no valido">
+                                    <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]*"/>
+                                    <f:ajax execute="@this" render="correoMessage"/>
+                                </input>
+                                <p:message id="correoMessage" for="correoInputText"/>
+                            </div>
+                            
+                            <div class="form-group">        
+                                <h:outputLabel value="Contraseña de ingreso:"  />   
+                                <p:password class="form-control" id="contra1InputText" required="true" feedback="true"
+                                                      requiredMessage="Por favor ingrese una contraseña"
+                                                      value="#{loginController.password}" maxlength="10"
+                                                      match="contra2InputText"
+                                                      promptLabel="La contraseña debe contener mínimo 8 caracteres y máximo 10 caracteres también debe contener un numero y un carácter especial"
+                                                      validatorMessage="La contraseña debe contener mínimo 8 caracteres y máximo 10 caracteres también debe contener un numero y un carácter especial" weakLabel="Baja" goodLabel="Media" strongLabel="Alta">
+                                            <f:validateLength minimum="8" maximum="10"/>
+                                            <f:validateRegex pattern="(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$" />
+                                </p:password>
+                                <p:message id="contra1Message" for="contra1InputText" />
+                            </div>                
+                             <div class="form-group">        
+                                <h:outputLabel value="Repetir contraseña:"  />   
+                                <p:password class="form-control" id="contra2InputText" required="true"
+                                                      requiredMessage="Por favor ingrese una contraseña"
+                                                      value="#{loginController.password}" maxlength="10">
+                                </p:password>
+                                <p:message id="contra2Message" for="contra2InputText" />
+                            </div>
+                            <div class="form-group">
+                                <p:commandLink value="¿Acepta Términos y condiciones?" style="font-size: 1em !important; font-weight: bold !important" oncomplete="PF('condiciones').show()" />
+                                <p:selectBooleanCheckbox rendered="true" requiredMessage="Debes aceptar Términos y condiciones del aplicativo" value="#{loginController.usuarioActual.condicionesRestricciones}" /> 
+                            </div>
+                            <p:commandButton class="boton-prime"
+                                        value="Guardar datos" 
+                                        process="@this"
+                                        ajax="false"
+                                        action="#{loginController.addUsuario}"
+                                        onclick="onSubmitButton();"/>
+                        </h:form>
+                        <p:dialog widgetVar="condiciones"  position="center center" modal="true" width="900" height="500">
+                            <ui:include src="terminosCondiciones.xhtml" />
+                        </p:dialog>
+                    </div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>
+

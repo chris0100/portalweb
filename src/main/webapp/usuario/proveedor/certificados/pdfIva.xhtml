@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <h:head>
+        <title>certificadosIVA-EKA</title>
+        <style>
+            body{
+                font-size: 0.8em;
+            }
+            th{
+                border-bottom: 1px solid black;
+            }
+            .tamanoDes{
+                width: 330px !important;
+            }
+            .direccion{
+               margin-left: 5px;
+            }
+            .direccion2{
+                float:right !important;
+            }
+            .tamano{
+                width: 100px !important
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form>
+            <div style="width: 540px; display:inline-block; vertical-align: top">
+                <div style="width: 480px; display: inline-block;padding: 0px; vertical-align: top; text-align: left;margin-top: 2px;">
+                    <span style="font-weight: bold">EKA Corporación S.A.</span>
+                </div>
+                <div style="width: 480px; display: inline-block;padding: 0px; vertical-align: top; text-align: left;margin-top: 2px;">
+                    805025631-6 
+                </div>
+                <div style="width: 480px; display: inline-block;padding: 0px; vertical-align: top; text-align: left;margin-top: 2px;">
+                    CL 46 a 1 61 
+                </div>
+                <div style="width: 480px; display: inline-block;padding: 0px; vertical-align: top; text-align: left;margin-top: 2px;">
+                    Cali
+                </div>
+            </div>
+            <div style="width: 130px; display: inline-block">
+                <img src="#{request.contextPath}/resources/images/logoEka.png" style="width: 130px; margin-top: 10px; margin-left: 5px"/>
+            </div>
+            <div style="border-bottom: 1px solid black; padding-bottom: 2em">
+                <div style="width: 690px; display: block;padding: 0px;text-align: center;margin-top: 2px;">
+                    <span style="font-weight: bold; font-size: 1.1em">CERTIFICADO DE RETENCIÓN POR IVA</span>
+                </div>
+                <div style="width: 690px; display: block;padding: 0px;text-align: center;margin-top: 2px;">
+                    PERIODO #{certificadoController.mesInicio}-#{certificadoController.anioGabable} A #{certificadoController.mesFin}-#{certificadoController.anioGabable}
+                </div>
+            </div>
+            <div>
+                <div style="width: 690px">
+                    <div style="width: 100px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;vertical-align: top">
+                        Retendido:
+                    </div>
+                    <div style="width: 300px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;">
+                        #{certificadoController.razon}
+                        <br></br>
+                        #{certificadoController.tipoid}-#{certificadoController.ident}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="width: 690px">
+                    <div style="width: 100px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;vertical-align: top">
+                        Dirección:
+                    </div>
+                    <div style="width: 300px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;">
+                        #{certificadoController.dirtercero}
+                        <br></br>
+                        #{certificadoController.ciudadtercero}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="width: 690px">
+                    <div style="width: 250px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;">
+                        Ciudad donde se practicó la retención:
+                    </div>
+                    <div style="width: 300px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;">
+                        #{certificadoController.ciudad_practica}
+                    </div>
+                </div>
+                <div style="width: 690px">
+                    <div style="width: 250px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;">
+                        Ciudad donde se consignó la retención:
+                    </div>
+                    <div style="width: 300px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;">
+                        #{certificadoController.ciudad_consigna}
+                    </div>
+                </div>
+                <div style="width: 690px">
+                    <div style="width: 250px; display: inline-block;padding: 0px;text-align: left;margin-top: 2px;">
+                        #{certificadoController.auxiliar}
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:10px; width: 670px;">
+                <h:dataTable style="margin-top: 3px;text-align: left; border-collapse: collapse !important;font-size: 0.8em"
+                         value="#{certificadoController.listaCertificadoRetencionIva}"
+                            var="item"
+                            border=""
+                            cellpadding="2"
+                            cellspacing="2"
+                            width="670px">
+                    <h:column>
+                        <f:facet name="header"><span style="text-align: center;">CONCEPTO</span></f:facet>
+                        <div jsf:rendered="#{certificadoController.bimestreTable}">
+                            Bimestre del 
+                            <h:outputText value="#{item.desde}">
+                                <f:convertDateTime pattern="dd/MM/YYYY"/>
+                            </h:outputText>
+                            al
+                            <h:outputText value="#{item.hasta}">
+                                <f:convertDateTime pattern="dd/MM/YYYY"/>
+                            </h:outputText>
+                        </div>
+                        <div jsf:rendered="#{!certificadoController.bimestreTable}">
+                            #{certificadoController.auxiliar}
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header"><span class="direccion2">TASA%</span></f:facet>
+                        <div class="direccion2">
+                            <h:outputText class="direccion" value="#{item.tasa}">
+                                <f:convertNumber pattern="#######.00"/> 
+                            </h:outputText> 
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header"><span class="direccion2">TASA BASE</span></f:facet>
+                        <div class="direccion2">
+                            <h:outputText class="direccion" value="#{item.tasabase}">
+                                <f:convertNumber pattern="#######.00"/> 
+                            </h:outputText> 
+                        </div>
+                    </h:column>
+                    <h:column class="tamano">
+                        <f:facet name="header"><span class="direccion2" style="text-align: right;">MONTO TOTAL</span></f:facet>
+                        <div class="direccion2">
+                            $<h:outputText class="direccion" value="#{item.base}">
+                                <f:convertNumber pattern="###,###.##" currencySymbol="$" />
+                            </h:outputText> 
+                        </div>
+                    </h:column>
+                   <h:column class="tamano">
+                       <f:facet name="header"><span class="direccion2" style="text-align: right;">VR. BASE</span></f:facet>
+                       <div class="direccion2">
+                           $<h:outputText value="#{item.base}">
+                                <f:convertNumber pattern="###,###.##" currencySymbol="$" />         
+                           </h:outputText>
+                       </div>
+                   </h:column>
+                   <h:column class="tamano" >
+                       <f:facet name="header"><span class="direccion2" style="text-align: right;"> VR RETENIDO</span></f:facet>
+                       <div class="direccion2">
+                           $<h:outputText value="#{item.neto}">
+                               <f:convertNumber pattern="###,###.##" currencySymbol="$" />         
+                           </h:outputText>
+                       </div>
+                   </h:column>
+                </h:dataTable>
+                <div style="margin-top: 5px">
+                    <div style="width: 360px; display: inline-block;">
+                        Total concepto
+                    </div>
+                    <div style="width: 100px; display: inline-block;text-align: right; border-top: 1px solid black">
+                        $<h:outputText value="#{certificadoController.total_monto}">
+                            <f:convertNumber pattern="###,###.##" currencySymbol="$" />         
+                        </h:outputText>
+                    </div>
+                    <div style="width: 100px; display: inline-block;text-align: right; border-top: 1px solid black">
+                        $<h:outputText value="#{certificadoController.total_base}">
+                            <f:convertNumber pattern="###,###.##" currencySymbol="$" />         
+                        </h:outputText>
+                    </div>
+                    <div style="width: 100px; display: inline-block;text-align: right; border-top: 1px solid black">
+                        $<h:outputText value="#{certificadoController.total_retenido}">
+                            <f:convertNumber pattern="###,###.##" currencySymbol="$" />         
+                        </h:outputText>
+                    </div>
+                </div>
+                <div style="margin-top: 10px">
+                    <div style="width: 360px; display: inline-block;">
+                        TOTAL
+                    </div>
+                    <div style="width: 100px; display: inline-block;text-align: right; border-top: 1px solid black">
+                        $<h:outputText value="#{certificadoController.total_monto}">
+                            <f:convertNumber pattern="###,###.##" currencySymbol="$" />         
+                        </h:outputText>
+                    </div>
+                    <div style="width: 100px; display: inline-block;text-align: right; border-top: 1px solid black">
+                        $<h:outputText value="#{certificadoController.total_base}">
+                            <f:convertNumber pattern="###,###.##" currencySymbol="$" />         
+                        </h:outputText>
+                    </div>
+                    <div style="width: 100px; display: inline-block;text-align: right; border-top: 1px solid black">
+                        $<h:outputText value="#{certificadoController.total_retenido}">
+                            <f:convertNumber pattern="###,###.##" currencySymbol="$" />         
+                        </h:outputText>
+                    </div>
+                </div>
+                <div style="margin-top: 50px">
+                    <div style="display: block;">
+                        Notas:  Forma Continua Impresa por Computador no necesita Firma Autógrafa (Art. 10 D.R. 836/91).
+                    </div>
+                </div>
+                <div style="margin-top: 50px">
+                    <div style="display: block;">
+                        Fecha de expedición: 
+                        <h:outputText value="#{certificadoController.fechaExpedicion}">
+                            <f:convertDateTime pattern="dd/MM/YYYY"/>      
+                        </h:outputText>
+                    </div>
+                </div>
+                <div style="margin-top: 50px">
+                    <div style="width: 690px; display: block;padding: 0px;text-align: center;">
+                        #{certificadoController.firma}
+                    </div>
+                    <div style="width: 690px; display: block;padding: 0px;text-align: center;margin-top: 2px;">
+                        #{certificadoController.cargo}
+                    </div>
+                </div>
+            </div>
+        </h:form>
+     
+    </h:body>
+</html>
+
+

@@ -1,0 +1,767 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 14/01/2017, 02:15:42 PM
+    Author     : Junior Cabal
+*/
+body{
+    font-size: 14.5px;
+}
+.img-logo{    
+}
+.letra-menu{
+    font-size: 1.6em;
+    font-weight: bold;
+}
+.ui-widget {
+    font-size: .9em !important;
+}
+.ui-paginator .ui-paginator-top .ui-widget-header .ui-corner-top{
+    border-radius: 0 !important;
+}
+.ui-corner-top{
+    border-radius: 0 !important;
+}
+
+.ui-inputfield {
+    margin: 0;
+    outline: medium none;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    padding-left: 10px !important;
+    width: 100% !important;
+    font-weight: normal;
+}
+
+.img-itemManual{
+    display: block !important;
+    margin: 0px auto !important;
+    height: 20em;
+}
+.ui-panel{
+    margin-bottom: 1em !important;
+}
+.ui-growl-title {
+    width: 100% !important;
+    font-size: 2em !important;
+    font-weight: bold !important;
+}
+.ui-growl { 
+    position: absolute !important;
+    z-index: 99999 !important;
+}
+
+.fc-grid .fc-event-time{
+    display: none !important;
+}
+.message-growl{
+    margin-top: 10em !important;
+}
+.panel-login{
+    background: white;
+    padding: 2em !important;
+    -webkit-box-shadow: 1px -2px 22px -2px rgba(0,0,0,0.75) !important;
+    -moz-box-shadow: 1px -2px 22px -2px rgba(0,0,0,0.75) !important;
+    box-shadow: 1px -2px 22px -2px rgba(0,0,0,0.75) !important;
+    margin-top: 1em !important;
+    margin-bottom: 0 !important;
+    
+}
+.group { 
+	position: relative; 
+	margin-bottom: 10px; 
+}
+
+.input-login {
+	font-size: 18px;
+	padding: 10px 10px 10px 5px;
+	-webkit-appearance: none;
+	display: block;
+	background: transparent;
+	color: #878787;
+	width: 100%;
+	border: none;
+	border-radius: 0;
+	border: 1px solid #185291 !important;
+        
+}
+
+.input-login:focus { outline: none; }
+
+
+/* Label */
+
+.label-login {
+	color: #999; 
+	font-size: 18px;
+	font-weight: normal;
+	position: absolute;
+	pointer-events: none;
+	left: 5px;
+	top: 10px;
+	transition: all 0.2s ease;
+}
+
+
+/* active */
+
+.input-login:focus ~ .label-login, .input-login.used ~ .label-login {
+    top: -20px;
+    transform: scale(.75); left: -2px;
+    /* font-size: 14px; */
+    color: #185291 !important;
+}
+
+
+/* Underline */
+
+.bar {
+	position: relative;
+	display: block;
+	width: 100%;
+}
+
+.bar:before, .bar:after {
+	content: '';
+	height: 2px; 
+	width: 0;
+	bottom: 1px; 
+	position: absolute;
+	background: #4a89dc; 
+	transition: all 0.2s ease;
+}
+
+.bar:before { left: 50%; }
+
+.bar:after { right: 50%; }
+
+
+/* active */
+
+.input-login:focus ~ .bar:before, .input-login:focus ~ .bar:after { width: 50%; }
+
+
+/* Highlight */
+
+.highlight {
+	position: absolute;
+	height: 60%; 
+	width: 100px; 
+	top: 25%; 
+	left: 0;
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+
+/* active */
+
+.input-login:focus ~ .highlight {
+	animation: inputHighlighter 0.3s ease;
+}
+.input-login{
+    background: white !important;
+}
+
+/* Animations */
+
+@keyframes inputHighlighter {
+	from { background: #4a89dc; }
+	to 	{ width: 0; background: transparent; }
+}
+
+
+/* Button */
+
+.button {
+  position: relative;
+  display: inline-block;
+  padding: 12px 24px;
+  width: 100%;
+  vertical-align: middle;
+  color: #fff;
+  font-size: 1.5em;
+  line-height: 20px;
+  text-align: center;
+  letter-spacing: 1px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid #3160B6;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.button:focus { outline: 0; }
+
+
+/* Button modifiers */
+
+.buttonBlue {
+  background: #4a89dc;
+  text-shadow: 1px 1px 0 rgba(39, 110, 204, .5);
+}
+
+.buttonBlue:hover { background: #357bd8; }
+
+
+/* Ripples container */
+
+.ripples {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+
+/* Ripples circle */
+
+.ripplesCircle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.ripples.is-active .ripplesCircle {
+  animation: ripples .4s ease-in;
+}
+
+
+/* Ripples animation */
+
+@keyframes ripples {
+  0% { opacity: 0; }
+
+  25% { opacity: 1; }
+
+  100% {
+    width: 200%;
+    padding-bottom: 200%;
+    opacity: 0;
+  }
+}
+.item {
+  position: relative;
+  margin: 2%;
+  overflow: hidden;
+}
+.item img {
+  max-width: 100%;
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  transition: all 0.5s;
+}
+.item:hover img {
+  -moz-transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+.select-menuPrimefaces{
+    width: 100% !important;
+    border: none !important;
+}
+.letra-size{
+    font-size: 1.5em !important;
+}
+
+.botonGuardar{
+    font-size: 1.22em !important;
+    height: 2em;
+    width: 100%;
+    background: #3eb422 !important; 
+}
+.botonGuardar:hover{
+    background: rgba(0,0,0,0);
+    color: #1E90FF;
+    box-shadow: inset 0 0 0 3px;
+}
+.color1{
+    background-color: lightgreen;
+    background-image: none;
+}
+.color2{
+    background-color: lightcoral;
+    background-image: none;  
+}
+.color3{
+    background-color: lightyellow;
+    background-image: none;
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-list {
+    background-color: white !important;
+    background: white !important;
+    color: black !important;
+    font-weight: bold !important;
+} 
+.color-lista{
+    background-color: white  !important;
+    background: white  !important;
+    color: black !important;
+    font-weight: bold !important;
+}
+.ui-selectonemenu-items .ui-selectonemenu-list .ui-widget-content .ui-widget .ui-corner-all .ui-helper-reset{
+    background-color: white  !important;
+    background: white  !important;
+    color: black !important;
+    font-weight: bold !important;
+}
+.ui-selectonemenu-panel .ui-widget .ui-widget-content .ui-corner-all .ui-helper-hidden .ui-shadow{
+    background-color: white  !important;
+    background: white  !important;
+    color: black !important;
+    font-weight: bold !important;
+}
+.ui-fileupload-content{
+    height: 100px !important;
+}
+.btn-cancelar{
+    background: darkorange !important;
+    height: 41px;
+    color: white;
+    border-radius: 0px !important;
+}
+.btn-cancelar:hover{
+    background: orange !important;
+    color: white;
+}
+
+.ui-growl .ui-widget .ui-growl-item-container .ui-state-highlight .ui-corner-all .ui-helper-hidden .ui-shadow .ui-growl-error .ui-growl-item{
+    z-index: 20000 !important;
+}
+
+.itemZoom {
+  position: relative;
+  margin: 2%;
+  overflow: hidden;
+  
+}
+.itemZoom img {
+  max-width: 100%;
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  transition: all 0.5s;
+}
+.itemZoom:hover img {
+    -moz-transform: scale(1.3);
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
+}
+.itemZoom:hover{
+   border-radius: 5px;
+    -webkit-box-shadow: 1px 1px 9px 2px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 9px 2px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 9px 2px rgba(0,0,0,0.75);
+}
+
+.panel-noticias-top:hover{
+    padding: 1em;
+    margin: 1em; 
+    margin-bottom: 0;
+    color: black;
+    background: white;
+    padding: .5em;
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 0px;
+    border: 1px solid #eee;
+    border-bottom: 0;
+}
+/* Paste this css to your style sheet file or under head tag */
+/* This only works with JavaScript, 
+if it's not present, don't show loader */
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url("#{request.contextPath}/resources/images/loading.gif") center no-repeat #fff;
+}
+.sincronizar{
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('http://eureka/resources/imagenes/load.gif') center no-repeat #fff;
+}
+.sincronizar:after {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    content: "Sincronizando datos";
+    text-align : Center;
+    margin-top: 3%;
+    font-size: 2.5em;
+}
+
+
+.loading{
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background:url('http://eureka/resources/imagenes/load.gif') center no-repeat #fff;
+}
+.loading:after {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    content: "Cargando, no interrumpir la operación";
+    text-align : Center;
+    margin-top: 3%;
+    font-size: 3em;
+}
+
+.SI{
+    background : lightgreen !important;
+    color: black;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 2em;
+    padding-right: 3em;
+    margin: 0 !important;
+    margin-left: -1em !important;
+}
+
+.NO{
+    background : lightcoral !important;
+    color: black;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 2em;
+    padding-right: 3em;
+    margin: 0 !important;
+    margin-left: -1em !important; 
+}
+
+.disable-input{
+    opacity: 0.95 !important;
+    filter: Alpha(Opacity=95) !important;
+ }
+ 
+ .sugerencia-containerIcon:hover{
+    -webkit-box-shadow: 0px 0px 22px 6px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 22px 6px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 22px 6px rgba(0,0,0,0.75);
+ }
+ 
+ .ui-tabs .ui-tabs-panel{
+     border: 1px solid lightgray !important;
+     padding-bottom: 1em !important;
+ }
+ 
+ .ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a {
+     background: #1a5493! important;
+     color: white;
+     font-size: 1.1em !important; 
+     font-weight: bold !important;
+ }
+ 
+/* Nuevo Template */
+.navbar-nav{
+   background: white !important; 
+   border: none !important;
+}
+.header-botones{
+    color: black !important;
+    font-size: 1.5em !important;
+}
+.header-sombra{
+    -webkit-box-shadow: 2px 15px 23px -14px rgba(153,153,153,1)!important;
+    -moz-box-shadow: 2px 15px 23px -14px rgba(153,153,153,1)!important;
+    box-shadow: 2px 15px 23px -14px rgba(153,153,153,1)!important;
+}
+.boton-prime{
+    height: 2.5em !important;
+    width: 100% !important; 
+    border-radius: 0px !important;
+    background: #1a5493 !important;
+    font-size: 1em !important;
+}
+.boton-prime:hover{
+    background: #1545b3 !important;
+}
+.boton-primeRojo{
+    height: 2.5em !important;
+    width: 100% !important; 
+    border-radius: 0px !important;
+    background: red !important;
+    font-size: 1em !important;
+}
+.boton-primeVerde{
+    color: white;
+    height: 2.5em !important;
+    width: 100% !important; 
+    border-radius: 0px !important;
+    background: #3eb422 !important;
+    font-size: 1em !important;
+}
+.boton-htmlVerde{
+    color: white !important;
+    height: 2.3em !important;
+    width: 100% !important; 
+    border-radius: 0px !important;
+    background: #3eb422 !important;
+    font-size: 1.1em !important;
+    font-weight: bold !important;
+}
+.boton-htmlVerde:hover{
+    background: #449d44 !important;
+    color: white !important;
+}
+
+.boton-primeAzulPequeno{
+    border-radius: 0px !important;
+    background: #1a5493 !important;
+    font-size: 1.2em !important;
+    margin-left: 5px !important;
+}
+.boton-primeRojoPequeno{
+    border-radius: 0px !important;
+    background: red !important;
+    font-size: 1.2em !important;
+    margin-left: 5px !important;
+}
+.boton-primeVerdePequeno{ 
+    border-radius: 0px !important;
+    background: #3eb422 !important;
+    font-size: 1.2em !important;
+    margin-left: 5px !important;
+}
+.link-login{
+    width: 100% !important;
+    font-size: 1em !important;
+    font-weight: bold !important;
+    color: #1a5493 !important;
+}
+.link-login:hover{
+    color: #1545b3 !important;
+    text-transform: none !important;
+    text-decoration: none !important;
+}
+.login-sombras{
+    -webkit-box-shadow: 10px 10px 17px -7px rgba(153,153,153,1);
+    -moz-box-shadow: 10px 10px 17px -7px rgba(153,153,153,1);
+    box-shadow: 10px 10px 17px -7px rgba(153,153,153,1);
+}
+
+.divPadre {
+    text-align:center;
+}
+.divHijo {
+    width:450px;
+    margin:0px auto;
+    text-align: left;
+}
+.ui-growl-message{
+    color: white !important;
+}
+.btn-ayuda{
+    background: #4267b2;
+    border-radius: 20px;
+    box-sizing: border-box;
+    color: #fff;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 100;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    padding: 5px;
+    text-decoration: none;
+}
+.gif-ayuda{
+    -webkit-box-shadow: 6px 5px 5px -2px rgba(130,130,130,1);
+    -moz-box-shadow: 6px 5px 5px -2px rgba(130,130,130,1);
+    box-shadow: 6px 5px 5px -2px rgba(130,130,130,1);
+}   
+
+/* About Us Section
+--------------------------------*/
+
+#about {
+  background: #fff;
+  padding: 20px 20px;
+}
+
+#about .about-container .background {
+  margin: 20px 0;
+}
+
+#about .about-container .content {
+  background: #fff;
+}
+
+#about .about-container .title {
+  color: #333;
+  font-weight: 700;
+  font-size: 32px;
+}
+
+#about .about-container p {
+  line-height: 26px;
+}
+
+#about .about-container p:last-child {
+  margin-bottom: 0;
+}
+
+#about .about-container .icon-box {
+  background: #fff;
+  background-size: cover;
+  padding: 0 0 30px 0;
+}
+
+#about .about-container .icon-box .icon {
+  float: left;
+  background: #fff;
+  width: 64px;
+  height: 64px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  text-align: center;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  transition: all 0.3s ease-in-out;
+}
+
+#about .about-container .icon-box .icon i {
+  color: #007bff;
+  font-size: 24px;
+}
+
+#about .about-container .icon-box:hover .icon {
+  background: #007bff;
+}
+
+#about .about-container .icon-box:hover .icon i {
+  color: #fff;
+}
+
+#about .about-container .icon-box .title {
+  margin-left: 80px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+
+#about .about-container .icon-box .title a {
+  color: #283d50;
+}
+
+#about .about-container .icon-box .description {
+  margin-left: 80px;
+  line-height: 25px;
+  font-size: 14px;
+}
+
+#about .about-extra {
+  padding-top: 60px;
+}
+
+#about .about-extra h4 {
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.ui-messages-error, .ui-message-error{
+    color: #b94a48 !important;
+    background-color: #f2dede !important;
+    border-color: #eed3d7 !important;
+}
+.ui-messages-info, .ui-message-info {
+    color: #3a87ad !important;
+    background-color: #d9edf7 !important;
+    border-color: #bce8f1 !important;
+}
+
+#exTab1 .tab-content {
+  color : white;
+  background-color: #428bca;
+  padding : 5px 15px;
+}
+
+#exTab2 h3 {
+  color : white;
+  background-color: #428bca;
+  padding : 5px 15px;
+}
+
+/* remove border radius for the tab */
+
+#exTab1 .nav-pills > li > a {
+  border-radius: 0;
+}
+
+/* change border radius for the tab , apply corners on top*/
+
+#exTab3 .nav-pills > li > a {
+  border-radius: 4px 4px 0 0 ;
+}
+
+#exTab3 .tab-content {
+  color : white;
+  background-color: #428bca;
+  padding : 5px 15px;
+}
+
+.ui-tabs{
+    padding: 0 !important;
+}
+.ui-tabs .ui-tabs-panel{
+    border-top: 3px solid #1a5493 !important;
+}
+.ui-tabs .ui-tabs-panel{
+    padding: 2em 3em !important;
+}
+.ui-tabs.ui-tabs-top>.ui-tabs-nav{
+    padding: 0.2em 3em 0 !important; 
+}
+.img-index{
+  background: url("http://eureka/resources/imagenes/index.jpg") center !important;
+  background-size: cover !important;
+}
+.noBorders *{
+    border: none !important;
+    padding-left: .5em !important;
+}
+

@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">
+            Validación de ítems 
+        </ui:define>
+        <ui:define name="title2">
+            Validación de ítems
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                    <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li jsf:rendered="#{loginController.pedidoEcuador}">
+                                <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear pedido ecuador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                   <li class="active" jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </h:form>
+        </ui:define>
+        <ui:define name="body" >        
+            <h:form id="formCodEka">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <h:outputLabel value="Código del ítem:"  />
+                            <div class="input-group">
+                                <span class="input-group-addon" style="background: lightgrey"><i class="fa fa-search"></i></span>
+                                <p:autoComplete id="codigoItem"
+                                    required="true"
+                                    requiredMessage="No se encontro código del ítem Eka"
+                                    forceSelection="true"
+                                    maxResults="20"
+                                    style="width: 100%"
+                                    itemValue="#{consultarItemCreadoController.itemPatron}"
+                                    value="#{consultarItemCreadoController.itemPatron}" 
+                                    completeMethod="#{consultarItemCreadoController.completeItemPatron}">
+                                    <p:ajax listener="#{consultarItemCreadoController.consultarListaExt1}" event="itemSelect" update="ext1 ext2"/>  
+                                    <f:ajax execute="@this" render="ext1 ext2"/>
+                                </p:autoComplete>
+                            </div>
+                            <p:message id="codigoItemMessage" for="codigoItem" styleClass="error"/>
+                        </div> 
+                        <div class="form-group">
+                            <h:outputLabel id="labelExt1" style="width: 100%" value="Ext 2:"  />
+                            <p:selectOneMenu id="ext1" 
+                                            style="width: 100% !important"
+                                            filter="true" 
+                                            filterMatchMode="contains"
+                                            value="#{consultarItemCreadoController.descExt1}" >
+                                <f:selectItem itemLabel="Seleccionar..." itemValue="" /> 
+                                <f:selectItems value="#{consultarItemCreadoController.listaExt1Consulta}"/>  
+                                <f:ajax execute="@this" render="ext1Message"/>
+                            </p:selectOneMenu>
+                            <p:message id="ext1Message" for="ext1" styleClass="error"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel id="labelExt2" style="width: 100%" value="Ext 2:"  />
+                            <p:selectOneMenu id="ext2" 
+                                            style="width: 100% !important"
+                                            filter="true" 
+                                            filterMatchMode="contains"
+                                            value="#{consultarItemCreadoController.descExt2}">
+                                <f:selectItem itemLabel="Seleccionar..." itemValue="" /> 
+                                <f:selectItems value="#{consultarItemCreadoController.listaExt2Consulta}"/>   
+                                <f:ajax execute="@this" render="ext2Message"/>
+                            </p:selectOneMenu>
+                            <p:message id="ext2Message" for="ext2" styleClass="error"/>
+                        </div>
+                        <div class="form-group">
+                            <p:commandButton styleClass="boton-prime" 
+                                action="#{consultarItemCreadoController.consultarItem}" 
+                                value="Consultar ítem"
+                                style="height: 2.5em"
+                                update="idItem descripcion referencia idExt1 descExt1 idExt2 descExt2 undInventario undOrden"
+                                ajax="false"
+                                icon="fa fa-search">
+                            </p:commandButton>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <h:outputLabel value="Código del ítem:"  />
+                                <h:inputText id="idItem"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.codItem}"/>
+                            </div> 
+                            <div class="form-group col-md-6">
+                                <h:outputLabel value="Referencia:"  />
+                                <h:inputText id="referencia"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.referencia}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel value="Descripción:"  />
+                            <h:inputText id="descripcion"
+                                         class="form-control"
+                                        disabled="true"
+                                        value="#{consultarItemCreadoController.descripcion}"/>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <h:outputLabel value="Ext 1:"  />
+                                 <h:inputText id="idExt1"
+                                              class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.ext1}"/>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <h:outputLabel value="Descripción ext 1:"  />
+                                <h:inputText id="descExt1"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.descExt1}"/>
+                            </div> 
+                            <div class="col-md-6 form-group">
+                                <h:outputLabel value="Ext 2:"  />
+                                <h:inputText id="idExt2"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.ext2}"/>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <h:outputLabel value="Descripción ext 2:"  />
+                                <h:inputText id="descExt2"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.descExt2}"/>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <h:outputLabel value="Unidad de inventario:"  />
+                                <h:inputText id="undInventario"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.undInventario}"/>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <h:outputLabel value="Unidad de orden:"  />
+                                <p:inputText id="undOrden"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.undOrden}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <h:outputLabel value="Codigo de barra:"  />
+                                <h:inputText id="codBarra"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.codBarra}"/>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <h:outputLabel value="Disponible:"  />
+                                <h:inputText id="disponible"
+                                             class="form-control"
+                                            disabled="true"
+                                            value="#{consultarItemCreadoController.disponible}">
+                                    <f:convertNumber type="currency" currencySymbol="" maxFractionDigits="0"/>
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:form>  
+        </ui:define>
+    </ui:composition>
+</html>
+
+

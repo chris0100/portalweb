@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">
+            Generación de certificados EKA. 
+        </ui:define>
+        <ui:define name="title2">
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                    <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                   <li class="active" jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </h:form>
+        </ui:define>
+        <ui:define name="body" >        
+            <p:growl id="growl" showDetail="true" life="5000" />
+            <h:form id="crear-Form">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group col-md-12">
+                            <h:outputLabel value="Tipo de certificado"  />
+                            <h:selectOneMenu id="tipoCertificado"
+                                             style="color: black; text-transform: none; font-size: 1em;width: 100%"
+                                             class="form-control"
+                                             value="#{certificadoController.tipoCertificado}">
+                                <f:selectItem itemValue="PCI" itemLabel="CERTIFICADO DE RETENCIÓN POR IVA" />
+                                <f:selectItem itemValue="PCC" itemLabel="CERTIFICADO DE RETENCIÓN EN LA FUENTE" />
+                                <f:selectItem itemValue="PIC" itemLabel="CERTIFICADO DE RETENCIÓN EN LA FUENTE POR ICA - CALI" />
+                                <f:selectItem itemValue="PIY" itemLabel="CERTIFICADO DE RETENCIÓN EN LA FUENTE POR ICA - YUMBO" />
+                                <f:ajax execute="@this" render="periodos"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <h:outputLabel value="Año grabable:"  />
+                            <input type="number"
+                                   style="color: black; text-transform: none; font-size: 1em;width: 100%"
+                                   class="form-control" min="2017"
+                                   jsf:value="#{certificadoController.anioGabable}" />
+                        </div>
+                        <p:outputPanel id="periodos">
+                            <div class="form-group col-md-12">
+                                <h:outputLabel id="labelMesInicio" value="Período:" rendered="#{certificadoController.certificadoIva}"/>
+                                <h:selectOneMenu id="mesInicio"
+                                                 rendered="#{certificadoController.certificadoIva}" 
+                                                 style="color: black; text-transform: none; font-size: 1em;width: 100%"
+                                                 class="form-control"
+                                                 value="#{certificadoController.mesInicio}">
+                                    <f:selectItem itemValue="#{null}" itemLabel="Seleccionar..." />
+                                    <f:selectItem itemValue="1" itemLabel="BIMESTRE ENERO - FEBRERO" />
+                                    <f:selectItem itemValue="3" itemLabel="BIMESTRE MARZO - ABRIL" />
+                                    <f:selectItem itemValue="5" itemLabel="BIMESTRE MAYO - JUNIO" />
+                                    <f:selectItem itemValue="7" itemLabel="BIMESTRE JULIO - AGOSTO" />
+                                    <f:selectItem itemValue="9" itemLabel="BIMESTRE SEPTIEMBRE - OCTUBRE" />
+                                    <f:selectItem itemValue="11" itemLabel="BIMESTRE NOVIEMBRE - DICIEMBRE" />
+                                </h:selectOneMenu>
+                            </div>
+                        </p:outputPanel>
+                        <div class="form-group col-md-12" role="alert">
+                            <div class="ui-messages-info">
+                                Por seguridad de la información tu certificado será cifrado con tu <span style="font-weight: bold">NIT</span>.
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <p:commandButton icon="fa fa-file-text" 
+                                            value="Generar PDF" 
+                                            styleClass="boton-prime"
+                                            action="#{certificadoController.createPDF}"
+                                            ajax="false" 
+                                            onclick="this.form.target='_blank'">
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </div>
+           </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+
+

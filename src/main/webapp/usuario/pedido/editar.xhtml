@@ -1,0 +1,793 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <ui:composition template="/template/template.xhtml">
+        <ui:define name="title">
+            Solcitud de pedidos  
+        </ui:define>
+        <ui:define name="title2">
+            Formulario de solcitud de pedido
+        </ui:define>
+        <ui:define name="menu">
+            <h:form id="menu-principal">
+               <ul class="nav navbar-nav">
+                    <li style="margin-top: 20px">
+                        <h:commandLink action="#{loginController.prepareDashboard}">
+                            <i class="menu-icon fa fa-dashboard"></i> 
+                            <span>Dashboard</span>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioCliente}">
+                        <h:commandLink action="#{pedidoController.prepareListaErrores}"
+                                      rendered="#{loginController.servicioCliente}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores</span>
+                            <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                        </h:commandLink>
+                    </li>
+                    <li jsf:rendered="#{loginController.servicioClienteJefe}">
+                        <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
+                                       rendered="#{loginController.servicioClienteJefe}">
+                            <i class="menu-icon fa fa-warning"></i> 
+                            <span>Lista de errores completo</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.admin}">
+                       <h:commandLink action="#{usuarioController.prepareList}" 
+                                      rendered="#{loginController.admin}">
+                            <i class="menu-icon fa fa-users"></i> 
+                            <span>Lista de usuarios</span>
+                        </h:commandLink>
+                    </li>
+                    <li class="menu-item-has-children dropdown active" jsf:rendered="#{loginController.cliente}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
+                        <ul class="sub-menu children dropdown-menu"> 
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareCreate}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear nuevo pedido</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li jsf:rendered="#{loginController.pedidoEcuador}">
+                                <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
+                                    <i class="fa fa-plus"></i> 
+                                    <span>Crear pedido ecuador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
+                                    <i class="fa fa-file"></i> 
+                                    <span>Pedidos en borrador</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaHistorial}">
+                                    <i class="fa fa-history"></i> 
+                                    <span>Historial de pedidos</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
+                                    <i class="fa fa-check"></i> 
+                                    <span>Pedidos en verificación</span>
+                                    <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
+                                </h:commandLink>
+                            </li>
+                        </ul>
+                    </li>
+                   <li jsf:rendered="#{loginController.proveedor}">
+                        <h:commandLink action="#{certificadoController.prepareParametros}">
+                            <i class="menu-icon fa fa-file"></i> 
+                            <span>Certificados proveedores</span>
+                        </h:commandLink>
+                    </li>
+                   <li jsf:rendered="#{loginController.itemUnoee}">
+                       <h:commandLink action="#{consultarItemCreadoController.prepareList}">
+                            <i class="menu-icon fa fa-diamond"></i> 
+                            <span>Validar ítem creado</span>
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </h:form>
+        </ui:define>
+        <ui:define name="body" >        
+            <p:growl id="growl" showDetail="true" life="5000" />
+            <h:form id="crear-Form">
+                <h:panelGroup id="crear-group">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <h:outputLabel value="Responsable del pedido:"/><span style="color:red; font-size: .8em"> (*Obligatorio)</span>
+                                <h:inputText id="usuario" 
+                                             style="font-weight: bold; font-size: 1.1em" 
+                                             class="form-control" 
+                                             value="#{pedidoController.pedidoActual.idUsuario.toString()}" 
+                                             disabled="true" 
+                                             maxlength="100">
+                                </h:inputText>
+                                <p:message id="usuarioMessage" for="usuario" styleClass="error"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel value="Número OC/OP:"/><span style="color:red; font-size: .8em"> (*Obligatorio)</span>
+                                <h:inputText id="oc"
+                                             required="true"
+                                             requiredMessage="Debes ingresar el numero de orden de compra"
+                                             class="form-control" 
+                                             value="#{pedidoController.pedidoActual.oc}"
+                                             maxlength="49"
+                                             validatorMessage="El numero de OC no puede repetirse ni debe contener espacios ni caracteres especiales..">
+                                    <f:validateRegex pattern="^[a-zA-Z0-9-]*$"/>
+                                    <f:ajax execute="@this" render="ocMessage"/>
+                                </h:inputText>
+                                <p:message id="ocMessage" for="oc" styleClass="error"/>
+                            </div>
+                            <div class="form-group">
+                                <h:outputLabel value="Notas:"/>
+                                <h:inputTextarea id="nota" 
+                                                 class="form-control" 
+                                                 value="#{pedidoController.pedidoActual.nota}"
+                                                 style="height: 140px;" 
+                                                 validatorMessage="Solo se permiten 1500 caracteres en el campo de notas">
+                                    <f:validateLength maximum="1500" />
+                                    <f:ajax execute="@this" render="notaMessage"/>
+                                </h:inputTextarea>
+                                <p:message id="notaMessage" for="nota" styleClass="error"/>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="panel panel-primary form-group"  style="border-radius: 0;">
+                                <div class="panel-heading"  style="border-radius: 0"><h4 class="letra-panelDescriEdu"> <i class="fa fa-truck" aria-hidden="true"></i> Datos de envío del pedido</h4></div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <h:outputLabel value="Sucursal a facturar:"/>
+                                                <h:inputText id="sucursalFact"
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.sucursalFacturar}"
+                                                             maxlength="100" 
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionSucursalFact" for="sucursalFact" styleClass="error"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h:outputLabel value="Punto de envío:"/>
+                                                <h:inputText id="puntoEnvio"
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.puntoEnvio}" 
+                                                             maxlength="100"
+                                                             required="true"
+                                                             requiredMessage="No se encontro vendedor"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionPuntoEnvio" for="puntoEnvio" styleClass="error"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h:outputLabel value="Vendedor:"/>
+                                                <h:inputText id="terceroVendedor"
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.terceroVendedor}" 
+                                                             maxlength="100"
+                                                             required="true"
+                                                             requiredMessage="No se encontro vendedor"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionTerceroVendedor" for="terceroVendedor" styleClass="error"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <h:outputLabel value="Sucursal a remisionar:"/>
+                                                <h:inputText id="sucursalRemi"
+                                                             class="form-control"
+                                                             required="true"
+                                                             requiredMessage="No se encontro sucursal"
+                                                             value="#{pedidoController.pedidoActual.sucursalRemisionar}"
+                                                             maxlength="100"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionSucursalRemi" for="sucursalRemi" styleClass="error"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h:outputLabel value="Dirección de envío:"/>
+                                                <h:inputText id="direccionEnvio"
+                                                             class="form-control"
+                                                             required="true"
+                                                             requiredMessage="No se encontro dirección"
+                                                             value="#{pedidoController.pedidoActual.direccion}" 
+                                                             maxlength="100"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionDireccionEnvio" for="direccionEnvio" styleClass="error"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h:outputLabel value="Contacto:"/>
+                                                <h:inputText id="contacto" 
+                                                             class="form-control"
+                                                             value="#{pedidoController.pedidoActual.contacto}" 
+                                                             maxlength="100"
+                                                             required="true"
+                                                             requiredMessage="No se encontro contacto"
+                                                             disabled="true">
+                                                </h:inputText>
+                                                <p:message id="descripcionContacto" for="contacto" styleClass="error"/>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="position: absolute; bottom: 0em" >
+                        <div class="container row">
+                            <div class="col-sm-4 form-group">    
+                                <p:button styleClass="boton-primeRojo" 
+                                    value="Cancelar" 
+                                    outcome="listaElaboracion"
+                                    icon="fa fa-arrow-left"
+                                    style="margin-top: 25px;margin-bottom: 25px;"/>
+                            </div>
+                            <div class="col-sm-2 form-group">    
+                                
+                            </div>
+                            <div class="col-sm-4 form-group">
+                                <p:commandButton styleClass="boton-primeVerde"
+                                    value="Verificar datos del pedido"
+                                    process="@this"
+                                    ajax="false"
+                                    icon="fa fa-sticky-note"
+                                    onclick="onSubmitButton();"
+                                    action="#{pedidoController.confirmarPedidoEditar}"
+                                    style="margin-top: 25px;margin-bottom: 25px;">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+            <div class="panel panel-primary form-group"  style="border-radius: 0; margin-bottom: 5em">
+                <div class="panel-heading"  style="border-radius: 0"><h4 class="letra-panelDescriEdu"><i class="fa fa-cart-arrow-down" aria-hidden="true"> </i> Ingresa los ítems del pedido</h4></div>
+                <div class="panel-body">
+                    <h:panelGroup id="agregarFuncion">
+                        <p:tabView dynamic="true">
+                            <p:ajax event="tabChange" listener="#{pedidoController.recargarCampos}"/>
+                            <p:tab  title="Buscar por código EKA" rendered="#{!pedidoController.mostrarItemCliente}">
+                                <h:form id="formCodEka">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <h:outputLabel value="Código del ítem:"  />
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" style="background: lightgrey"><i class="fa fa-search"></i></span>
+                                                    <p:autoComplete id="codigoItem"
+                                                        required="true"
+                                                        requiredMessage="No se encontro código del ítem Eka"
+                                                        forceSelection="true"
+                                                        maxResults="20"
+                                                        style="width: 100%"
+                                                        itemValue="#{pedidoController.itemPatron}"
+                                                        value="#{pedidoController.itemPatron}" 
+                                                        completeMethod="#{pedidoController.completeItemPatron}">
+                                                        <p:ajax listener="#{pedidoController.consultarTipoExt}" event="itemSelect" update="codigoItem unidad cantidad ext1 ext2 labelExt1 labelExt2"/>  
+                                                        <f:ajax execute="@this" render="ext1 ext2 cantidad labelExt1 labelExt2"/>
+                                                    </p:autoComplete>
+                                                </div>
+                                                <p:message id="codigoItemMessage" for="codigoItem" styleClass="error"/>
+                                            </div> 
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <h:outputLabel id="labelExt1" value="#{pedidoController.descripcionLabelExt1}:"  />
+                                                        <p:selectOneMenu id="ext1" 
+                                                                        style="width: 100% !important"
+                                                                        filter="true" 
+                                                                        filterMatchMode="contains"
+                                                                        value="#{pedidoController.ext1}" 
+                                                                        requiredMessage="Por favor indique la extensión 1" 
+                                                                        required="true">
+                                                            <f:selectItem itemLabel="Seleccionar..." itemValue="" /> 
+                                                            <f:selectItems value="#{pedidoController.listaExt1}"/>   
+                                                            <f:ajax execute="@this" render="ext1Message"/>
+                                                        </p:selectOneMenu>
+                                                        <p:message id="ext1Message" for="ext1" styleClass="error"/>
+                                                    </div> 
+                                                    <div class="form-group">
+                                                        <h:outputLabel id="labelExt2" style="width: 100%" value="#{pedidoController.descripcionLabelExt2}:"  />
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon" style="background: lightgrey"><i class="fa fa-search"></i></span>
+                                                            <p:autoComplete forceSelection="true"
+                                                                required="true"
+                                                                requiredMessage="No se encontro extensión 2"
+                                                                id="ext2" 
+                                                                maxResults="20"  
+                                                                style="width: 100%" 
+                                                                value="#{pedidoController.ext2}" 
+                                                                completeMethod="#{pedidoController.completeExt2}"/> 
+                                                        </div>
+                                                        <p:message id="ext2Message" for="ext2" styleClass="error"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <h:outputLabel value="Unidad de medida:"/>
+                                                        <h:inputText id="unidad"
+                                                            class="form-control"
+                                                            required="true"
+                                                            disabled="true"
+                                                            requiredMessage="No se encontro unidad de medida"
+                                                            value="#{pedidoController.itemPedidoActual.unidadMedida}" 
+                                                            maxlength="100">
+                                                        </h:inputText>
+                                                        <p:message id="unidadMessage" for="unidad" styleClass="error"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <h:outputLabel value="Cantidad:"  />
+                                                        <p:inputNumber  id="cantidad" 
+                                                                        required="true"
+                                                                        requiredMessage="No se encontro cantidad"
+                                                                        value="#{pedidoController.itemPedidoActual.cantidad}"
+                                                                        decimalPlaces="#{pedidoController.decimalesUnidadMedida}">
+                                                            <f:ajax execute="@this" render="cantidadMessage"/>
+                                                        </p:inputNumber>
+                                                        <p:message id="cantidadMessage" for="cantidad" styleClass="error"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <p:commandButton styleClass="boton-prime" 
+                                                    action="#{pedidoController.addItemPedido}" 
+                                                    value="Agregar ítem"
+                                                    style="height: 2.5em"
+                                                    update="codigoItem ext1 ext2 cantidad unidad formTablaItems:tablaFuncion"
+                                                    icon="fa fa-level-down">
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div style="margin-top: 1.7em !important">
+                                                <p:commandLink oncomplete="PF('diag1').show()" style="font-size: 2em">
+                                                    <i style="font-size: 2em" class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                                </p:commandLink>
+                                            </div>
+                                            <!-- Modal -->
+                                            <p:dialog header="Agregar productos" widgetVar="diag1" position="center center" modal="true" width="600" height="500">
+                                                <div class="panel-body" >
+                                                    <div style="font-size: 1.2em">
+                                                        Para agregar productos:
+                                                        <div style="margin-left: 10px">
+                                                            <strong>1. </strong>El campo de <strong>código del ítem</strong> es un campo de busqueda que filtra los productos de acuerdo a los que se escriba.
+                                                            <br></br> 
+                                                            <strong>2. </strong>Seleccionar el tamaño en centímetros
+                                                            (Si es un producto de la unidad de negocio de Eka cierres),
+                                                            ancho en milímetros (Si es un producto de la unidad de negocio de Tex cintas),
+                                                            o marca (si es un producto de de la unidad de negocio de Kos).
+                                                            <br></br>
+                                                            <strong>3. </strong>Buscar Colores y combinaciones 
+                                                            (Si es un producto de la unidad de negocio de Eka cierres o Tex cintas), 
+                                                            o calibre (si es un producto de de la unidad de negocio de Kos).
+                                                            <br></br>
+                                                            <strong>4. </strong>El campo de <strong>unidad de medida</strong> se llena dependiendo del producto seleccionado y no podrá modificarse.
+                                                            <br></br>
+                                                            <strong>5. </strong>Ingresar la <strong>cantidad requerida</strong> de este producto.
+                                                            <br></br>
+                                                            <strong>6. </strong>Haz clic en <strong>Agregar ítem</strong>, para que se vaya anexando al pedido.
+                                                        </div>
+                                                        <br></br>
+                                                    </div>
+                                                    <div>
+                                                        <img src="#{request.contextPath}/resources/ayuda/codigoeka.gif" class="gif-ayuda" alt="primer inicio" width="100%"/>
+                                                    </div>
+                                                </div>
+                                            </p:dialog>
+                                        </div>
+                                    </div>
+                                </h:form>
+                            </p:tab>
+                            <p:tab title="Buscar tu código" rendered="#{pedidoController.mostrarPanel}">
+                                <h:form id="formCodCliente">
+                                    <div class="row">
+                                        <div class="form-group col-md-8">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <h:outputLabel value="Código del cliente del ítem:"  />
+                                                    <p:inputText id="codItemCliente" 
+                                                                 value="#{pedidoController.codigoCliente}" 
+                                                                 maxlength="100" 
+                                                                 required="true"
+                                                                 requiredMessage="Debes ingresar el código del ítem">
+                                                        <p:ajax listener="#{pedidoController.consultarItemHomologado}"/>  
+                                                        <f:ajax execute="@this" render="codItemCliente codItem ext1Cliente ext2Cliente unidadCliente cantidadCliente labelExt1 labelExt2"/>
+                                                    </p:inputText>
+                                                    <p:message id="codItemClienteMessage" for="codItemCliente" styleClass="error"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <h:outputLabel value="Código del ítem Eka:"  />
+                                                    <h:inputText value="#{pedidoController.itemPatron}"
+                                                        required="true"
+                                                        requiredMessage="No se encontro código del ítem Eka"
+                                                        id="codItem"
+                                                        class="form-control"
+                                                        disabled="true"
+                                                        style="width: 100%">
+                                                    </h:inputText>
+                                                    <p:message id="codItemMessage" for="codItem" styleClass="error"/>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <h:outputLabel id="labelExt1" value="#{pedidoController.descripcionLabelExt1}:"  />
+                                                            <h:inputText value="#{pedidoController.ext1}"
+                                                                required="true"
+                                                                requiredMessage="No se encontro extensión 1"
+                                                                id="ext1Cliente"
+                                                                class="form-control"
+                                                                disabled="true"
+                                                                style="width: 100%">
+                                                            </h:inputText>
+                                                            <p:message id="ext1ClienteMessage" for="ext1Cliente" styleClass="error"/>
+                                                        </div> 
+                                                        <div class="form-group">
+                                                            <h:outputLabel id="labelExt2" value="#{pedidoController.descripcionLabelExt2}:"  />
+                                                            <h:inputText value="#{pedidoController.ext2}"
+                                                                required="true"
+                                                                requiredMessage="No se encontro extensión 2"
+                                                                id="ext2Cliente"
+                                                                class="form-control"
+                                                                disabled="true"
+                                                                style="width: 100%">
+                                                            </h:inputText>
+                                                            <p:message id="ext2ClienteMessage" for="ext2Cliente" styleClass="error"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <h:outputLabel value="Unidad de medida:"/>
+                                                            <h:inputText id="unidadCliente"
+                                                                required="true"
+                                                                requiredMessage="No se encontro unidad de medida"
+                                                                disabled="true"
+                                                                class="form-control"
+                                                                value="#{pedidoController.itemPedidoActual.unidadMedida}" 
+                                                                maxlength="100">
+                                                            </h:inputText>
+                                                            <p:message id="unidadClienteMessage" for="unidadCliente" styleClass="error"/>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <h:outputLabel value="Cantidad:"  />
+                                                            <p:inputNumber id="cantidadCliente"
+                                                                            required="true"
+                                                                            requiredMessage="No se encontro cantidad"
+                                                                            value="#{pedidoController.itemPedidoActual.cantidad}"
+                                                                            decimalPlaces="#{pedidoController.decimalesUnidadMedida}"/>
+                                                            <p:message id="cantidadClienteMessage" for="cantidadCliente" styleClass="error"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <p:commandButton styleClass="boton-prime" 
+                                                        action="#{pedidoController.addItemPedido}" 
+                                                        value="Agregar item"
+                                                        style="height: 2.5em"
+                                                        update="codItem ext1Cliente ext2Cliente unidadCliente cantidadCliente codItemCliente formTablaItems:tablaFuncion"
+                                                        icon="fa fa-level-down">
+                                                   </p:commandButton>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div style="margin-top: 1.7em !important">
+                                                <p:commandLink oncomplete="PF('diag2').show()" style="font-size: 2em">
+                                                    <i style="font-size: 2em" class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                                </p:commandLink>
+                                            </div>
+                                            <!-- Modal -->
+                                            <p:dialog header="Agregar productos" widgetVar="diag2" position="center center" modal="true" width="600" height="500">
+                                                <div class="panel-body" >
+                                                    <div style="font-size: 1.2em">
+                                                        Para agregar productos:
+                                                        <div style="margin-left: 10px">
+                                                            <strong>1. </strong>En el campo <strong>Código del cliente del ítem</strong>, se 
+                                                            escribe el código propio usado para identificar el producto en la compañía 
+                                                            del cliente, una vez se ingresa el código y se oprima la tecla tab o se haga clic 
+                                                            en otro elemento del formulario, automáticamente se diligencian los otros campos del formulario, estos 
+                                                            no se pueden modificar.
+                                                            <br></br> 
+                                                            <strong>2. </strong>Ingresar la <strong>cantidad requerida</strong> de este producto.
+                                                            <br></br>
+                                                            <strong>3. </strong>Haz clic en <strong>Agregar ítem</strong>, para que se vaya anexando al pedido.
+                                                        </div>
+                                                        <br></br>
+                                                    </div>
+                                                    <div>
+                                                        <img src="#{request.contextPath}/resources/ayuda/codigocliente.gif" class="gif-ayuda" alt="primer inicio" width="100%"/>
+                                                    </div>
+                                                </div>
+                                            </p:dialog>
+                                        </div>
+                                    </div>
+                                </h:form>
+                            </p:tab>
+                            
+                            
+                            <p:tab title="Cargar hoja de calculo" rendered="#{pedidoController.mostrarPanel}">
+                                <h:form id="formCargarPlano">
+                                    <div class="form-group row">
+                                        <div class="form-group col-md-8">
+                                            <div class="form-group">
+                                                <h:outputLabel value="Cargar archivo de ítems:" />
+                                                <p:fileUpload cancelLabel="Cancelar"
+                                                              auto="true"
+                                                              uploadLabel="Cargar archivo"
+                                                              allowTypes="/(\.|\/)(xlsx)$/"
+                                                              label="Examinar"
+                                                              mode="advanced" 
+                                                              update="cadenaCaracter"
+                                                              required="true"
+                                                              style="height: 5em !important"
+                                                              sizeLimit="2000000"
+                                                              fileUploadListener="#{pedidoController.cargarHojaCalculoUsuario}" 
+                                                              id="plano"
+                                                              process="@this"
+                                                              invalidSizeMessage="El archivo que deseas cargar sobrepasa 1MB"
+                                                              converterMessage="proceso terminado"
+                                                              invalidFileMessage="Solo se aceptan archivos .xlsx">
+                                                 </p:fileUpload>
+                                                <p:messages id="messageDoc" showDetail="true" closable="false"/>
+                                            </div>
+                                            
+                                            
+                                            <div class="form-group">
+                                                <h:inputTextarea disabled="true" id="cadenaCaracter" style="width: 100%; height: 200px; font-family: monospace !important" value="#{pedidoController.cadenaCaracteresText1}"/> 
+                                            </div>
+                                            
+                                            
+                                            <div class="form-group">
+                                                <p:commandButton styleClass="boton-prime" 
+                                                    action="#{pedidoController.addPlano}" 
+                                                    value="Procesar archivo"
+                                                    style="height: 2.5em; width: 30%"
+                                                    update=" formTablaItems:tablaFuncion plano cadenaCaracter"
+                                                    icon="fa fa-level-down">
+                                                </p:commandButton>
+                                            </div>
+                                            
+                                            
+                                        </div>
+                                        
+                                        
+                                        
+                                        <div class="col-md-4">
+                                            
+                                            <div style="margin-top: 1.7em !important">
+                                                <p:commandLink oncomplete="PF('diag3').show()" style="font-size: 2em">
+                                                    <i style="font-size: 2em" class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                                </p:commandLink>
+                                            </div>
+                                            
+                                            <!-- Modal -->
+                                            <p:dialog header="Agregar productos" widgetVar="diag3" position="center center" modal="true" width="600">
+                                                <div class="panel-body" >
+                                                    <h:form>
+                                                        <div style="font-size: 1.2em">
+                                                            Para agregar productos por medio de hoja de calculo .xlsx, debes:
+                                                            <div style="margin-left: 10px">
+                                                                <strong>1. </strong>Descargar estructura dando clic en el botón:
+                                                                <br></br> 
+                                                                <p:commandButton value="Descargar estructura" ajax="false"  icon="fa fa-download">
+                                                                    <p:fileDownload value="#{pedidoController.descargarEstructura}" />
+                                                                </p:commandButton>
+                                                                <br></br>
+                                                                <strong>2. </strong> Abrir la estructura descargada.
+                                                                <br></br>
+                                                                <strong>3. </strong><strong>Código del ítem: </strong> Ingresar tu código del ítem.
+                                                                <br></br>
+                                                                <strong>4. </strong><strong>Cantidad requerida: </strong> Ingresar la cantidad requerida.
+                                                                <br></br>
+                                                                <strong>5. </strong>Haz clic en el botón <strong>examinar</strong>.
+                                                                <br></br>
+                                                                <strong>6. </strong>Seleccionar el archivo.
+                                                                <br></br>
+                                                                <strong>7. </strong>Haz clic en <strong>procesar archivo</strong>.
+                                                            </div>
+                                                            <br></br>
+                                                        </div>
+                                                    </h:form>
+                                                </div>
+                                            </p:dialog>
+                                        </div>
+                                    </div>
+                                </h:form>
+                            </p:tab>
+                            
+                            
+                            
+                            
+                            
+                            <p:tab  title="Agregar producto" rendered="#{pedidoController.mostrarItemCliente}">
+                                <h:form id="formItemCliente">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <h:outputLabel value="Código del ítem:"  />
+                                                <p:selectOneMenu id="codigoItemCliente" 
+                                                                style="width: 100% !important"
+                                                                filter="true" 
+                                                                autoWidth="false"
+                                                                filterMatchMode="contains"
+                                                                value="#{pedidoController.codigoCliente}">
+                                                    <f:selectItem itemLabel="Seleccionar..." itemValue="" /> 
+                                                    <f:selectItems value="#{pedidoController.listaItemCliente}"/> 
+                                                    <f:ajax execute="@this" render="codigoItemMessage"/>
+                                                    <p:ajax listener="#{pedidoController.partirItemCliente}" event="itemSelect" update="codigoItemCliente codPatronItem unidadItemCliente cantItemCliente ext1ItemCliente ext2ItemCliente labelExt1ItemCliente labelExt2ItemCliente"/>  
+                                                </p:selectOneMenu>
+                                                <p:message id="codigoItemMessage" for="codigoItemCliente" styleClass="error"/>
+                                            </div> 
+                                            <div class="form-group">
+                                                <h:outputLabel value="Código del ítem Eka:"  />
+                                                <h:inputText value="#{pedidoController.itemPatron}"
+                                                    required="true"
+                                                    requiredMessage="No se encontro código del ítem Eka"
+                                                    id="codPatronItem"
+                                                    class="form-control"
+                                                    disabled="true"
+                                                    style="width: 100%">
+                                                </h:inputText>
+                                                <p:message id="codPatronItemMessage" for="codPatronItem" styleClass="error"/>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <h:outputLabel id="labelExt1ItemCliente" value="#{pedidoController.descripcionLabelExt1}:"  />
+                                                        <h:inputText value="#{pedidoController.ext1}"
+                                                            required="true"
+                                                            requiredMessage="No se encontro extensión 1"
+                                                            id="ext1ItemCliente"
+                                                            class="form-control"
+                                                            disabled="true"
+                                                            style="width: 100%">
+                                                        </h:inputText>
+                                                        <p:message id="ext1ItemClienteMessage" for="ext1ItemCliente" styleClass="error"/>
+                                                    </div> 
+                                                    <div class="form-group">
+                                                        <h:outputLabel id="labelExt2ItemCliente" value="#{pedidoController.descripcionLabelExt2}:"  />
+                                                        <h:inputText value="#{pedidoController.ext2}"
+                                                            required="true"
+                                                            requiredMessage="No se encontro extensión 2"
+                                                            id="ext2ItemCliente"
+                                                            class="form-control"
+                                                            disabled="true"
+                                                            style="width: 100%">
+                                                        </h:inputText>
+                                                        <p:message id="ext2ItemClienteMessage" for="ext2ItemCliente" styleClass="error"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <h:outputLabel value="Unidad de medida:"/>
+                                                        <h:inputText id="unidadItemCliente"
+                                                            required="true"
+                                                            requiredMessage="No se encontro unidad de medida"
+                                                            disabled="true"
+                                                            class="form-control"
+                                                            value="#{pedidoController.itemPedidoActual.unidadMedida}" 
+                                                            maxlength="100">
+                                                        </h:inputText>
+                                                        <p:message id="unidadItemClienteMessage" for="unidadItemCliente" styleClass="error"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <h:outputLabel value="Cantidad:"  />
+                                                        <p:inputNumber id="cantItemCliente"
+                                                                        required="true"
+                                                                        requiredMessage="No se encontro cantidad"
+                                                                        value="#{pedidoController.itemPedidoActual.cantidad}"
+                                                                        decimalPlaces="#{pedidoController.decimalesUnidadMedida}"/>
+                                                        <p:message id="cantItemClienteMessage" for="cantItemCliente" styleClass="error"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <p:commandButton styleClass="boton-prime" 
+                                                    action="#{pedidoController.addItemPedido}" 
+                                                    value="Agregar ítem"
+                                                    style="height: 2.5em"
+                                                    update="codigoItemCliente codPatronItem ext1ItemCliente ext2ItemCliente cantItemCliente unidadItemCliente formTablaItems:tablaFuncion"
+                                                    icon="fa fa-level-down">
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div style="margin-top: 1.7em !important">
+                                                <p:commandLink oncomplete="PF('diag4').show()" style="font-size: 2em">
+                                                    <i style="font-size: 2em" class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                                </p:commandLink>
+                                            </div>
+                                            <!-- Modal -->
+                                            <p:dialog header="Agregar productos" widgetVar="diag4" position="center center" modal="true" width="600" height="500">
+                                                <div class="panel-body" >
+                                                    <div style="font-size: 1.2em">
+                                                        Para agregar productos:
+                                                        <div style="margin-left: 10px">
+                                                            <strong>1. </strong>En el campo <strong>Código del ítem</strong>, se 
+                                                            selecciona el producto requerido, una vez seleccionado automáticamente se diligencian los otros campos del formulario, estos 
+                                                            no se podrán modificar.
+                                                            <br></br> 
+                                                            <strong>2. </strong>Ingresar la <strong>cantidad requerida</strong> de este producto.
+                                                            <br></br>
+                                                            <strong>3. </strong>Haz clic en <strong>Agregar ítem</strong>, para que se vaya anexando al pedido.
+                                                        </div>
+                                                        <br></br>
+                                                    </div>
+                                                    <div>
+                                                        <img src="#{request.contextPath}/resources/ayuda/itemclienteamarrado.gif" class="gif-ayuda" alt="primer inicio" width="100%"/>
+                                                    </div>
+                                                </div>
+                                            </p:dialog>
+                                        </div>
+                                    </div>
+                                </h:form>
+                            </p:tab>
+                        </p:tabView>
+                        
+                        
+                        <div class="row">
+                            <h:form id="formTablaItems">
+                                <h:panelGroup class="col-md-12" id="itemsGroup">
+                                    <p:dataTable  id="tablaFuncion" emptyMessage="No se encontraron registros" value="#{pedidoController.listaItemPedidoSelect}" var="item">
+                                        <p:column headerText="Código del ítem">
+                                            <h:outputText value="#{item.codCliente}" style="font-weight: bold"/>
+                                        </p:column>
+                                        <p:column headerText="Código EKA">
+                                            <h:outputText value="#{item.codItem}"/>
+                                        </p:column>
+                                        <p:column headerText="Descripción">
+                                            <h:outputText value="#{item.descripcion}"/>
+                                        </p:column>
+                                        <p:column headerText="Extensión 1">
+                                            <h:outputText value="#{item.descripcionExt1}"/>
+                                        </p:column>
+                                        <p:column headerText="Extensión 2">
+                                            <h:outputText value="#{item.descripcionExt2}"/>
+                                        </p:column>
+                                        <p:column style="text-align: center !important;  width: 150px">
+                                            <f:facet name="header">Cantidad</f:facet>
+                                            <h:outputText value="#{item.cantidad}">
+                                                <f:convertNumber type="currency"
+                                                                 currencySymbol=""
+                                                                 maxFractionDigits="2"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column style="text-align: center !important;  width: 150px">
+                                            <f:facet name="header">U. medida</f:facet>
+                                            <h:outputText value="#{item.unidadMedida}"/>
+                                        </p:column>
+                                        <p:column width="50">
+                                            <p:commandButton icon="ui-icon-trash" 
+                                                             action="#{pedidoController.deleteItemPedido}"
+                                                            process="@this" 
+                                                            update="tablaFuncion">
+                                                <f:ajax execute="@this"/>
+                                                <f:setPropertyActionListener value="#{item}" target="#{pedidoController.itemPedidoTable}"/>
+                                            </p:commandButton>
+                                       </p:column>
+                                   </p:dataTable>
+                                </h:panelGroup>
+                            </h:form>
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>
+
+
