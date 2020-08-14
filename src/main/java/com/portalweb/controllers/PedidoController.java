@@ -32,10 +32,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.ejb.EJB;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
@@ -67,6 +64,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.DefaultStreamedContent;
 
 import javax.xml.rpc.holders.ShortHolder;
+
+import static com.portalweb.controller.util.OrderPedidoItem.*;
 
 /**
  * @author Lccabalr
@@ -1042,9 +1041,12 @@ public class PedidoController implements Serializable {
     }
 
 
-    //Se da la aprobacion del pedido.
+    //Se da la aprobacion del pedido(BOTON APROBAR PEDIDO).
     public String addPedido() {
         try {
+
+            //ordenar una lista por diferentes parametros
+            listaItemPedidoSelect.sort(ascending(getComparator(DESCRIPCION_SORT, DESC_EXT2_SORT, TAM_CANT_SORT)));
 
             //Si la lista del pedido esta vacia.
             if (listaItemPedidoSelect.isEmpty()) {
@@ -1052,10 +1054,7 @@ public class PedidoController implements Serializable {
                 return null;
             }
 
-            //ordenar una lista por medio de tres parametros
-            
-
-            //Si la lista de itemPedidoSelect esta llena, pero esta en modo edicion
+            //Si la lista de itemPedidoSelect tiene contenido, pero esta en modo edicion
             else {
                 if (editarPedido) {
                     pedidoActual.setEstado((short) 1);
@@ -1070,10 +1069,9 @@ public class PedidoController implements Serializable {
                 }
 
 
-                //Si la lista de itemPedidoSelect esta llena,
+                //Si la lista de itemPedidoSelect tiene contenido
                 else {
                     obtenerDatosAsesorUnoEE(pedidoActual.getIdUsuario().getIdSucursal(), pedidoActual.getIdUsuario().getNit());
-
 
                     pedidoActual.setFechaPedido(new Date());
                     pedidoActual.setIdUsuario(usuarioActual);
@@ -2187,6 +2185,8 @@ public class PedidoController implements Serializable {
     }
 
 
+
+    //Recarga la consulta del item pedido.
     public void recargarConsultarItemsPedidosUnoee()
             throws SQLException {
         String connectionUrl = "jdbc:sqlserver://192.168.160.153\\EKACORP;databaseName=UnoEE;user=bd_eureka;password=Desarrollos478#";
@@ -2231,7 +2231,9 @@ public class PedidoController implements Serializable {
         Connection con = DriverManager.getConnection(connectionUrl);
         Statement stmt = null;
 
+        //Query que obtiene los datos del asesor.
         String query = "Select top 1 t200asesor.f200_nit nit_asesor, t015asesor.f015_email correo_asesor ,t200asesor.f200_razon_social nombre_asesor From UnoEE.dbo.t200_mm_terceros f inner join UnoEE.dbo.t204_mm_planes_criterios t204asesor on t204asesor.f204_id  = '005' left	join  UnoEE.dbo.t207_mm_criterios_clientes t207asesor on f207_id_cia = 1 and t207asesor.f207_rowid_tercero = f.f200_rowid  and  t207asesor.f207_id_sucursal = '" + idSucursal + "' and	 t207asesor.f207_id_plan_criterios = f204_id left	join  UnoEE.dbo.t206_mm_criterios_mayores t206asesor on f206_id_cia =1 		and	 t206asesor.f206_id_plan = f207_id_plan_criterios and	 t206asesor.f206_id = f207_id_criterio_mayor inner join  UnoEE.dbo.t200_mm_terceros t200asesor on t200asesor.f200_nit = convert(varchar,(convert(int, left (f206_descripcion, patindex('%[^0-9]%',f206_descripcion +' ')-1)))) inner join  UnoEE.dbo.t015_mm_contactos t015asesor on t200asesor.f200_rowid_contacto = t015asesor.f015_rowid where f.f200_nit = '" + nit + "'";
+
         try {
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -2256,6 +2258,9 @@ public class PedidoController implements Serializable {
         ec.redirect("http://eureka:8080/intranet/faces/procesarItemPedidoWeb.xhtml?id=" + itemPedidoActual.getIdItem());
     }
 
+
+
+    //Realiza la descarga de estructura
     public DefaultStreamedContent getDescargarEstructura() {
         try {
             String newFileName = FacesContext.getCurrentInstance().getExternalContext().getRealPath("resources/plano/estructura.xlsx");
@@ -2265,6 +2270,9 @@ public class PedidoController implements Serializable {
         }
     }
 
+
+
+    //Descarga la estructura de Ecuador.
     public DefaultStreamedContent getDescargarEstructuraEcu() {
         try {
             String newFileName = FacesContext.getCurrentInstance().getExternalContext().getRealPath("resources/plano/estructuraEcu.xlsx");

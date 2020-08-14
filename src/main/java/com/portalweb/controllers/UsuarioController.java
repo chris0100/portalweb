@@ -92,6 +92,7 @@ public class UsuarioController implements Serializable {
         this.usuarioActual = usuarioActual;
     }
 
+    //Desde el inicio se manda a llamar la lista con los usurios completos.
     public List<T001Usuario> getListaUsuarios() {
         return listaUsuarios = getUsuarioFacade().findAll();
     }
@@ -177,10 +178,13 @@ public class UsuarioController implements Serializable {
         this.listaPuntoEnvio = listaPuntoEnvio;
     }
 
+
     public String prepareCreate() {
         usuarioActual = new T001Usuario();
         return "crear";
     }
+
+
     public void prepareRolCalidad(ActionEvent event){
         usuarioActual = new T001Usuario();
         usuarioActual = (T001Usuario) event.getComponent().getAttributes().get("usuario");
@@ -209,6 +213,9 @@ public class UsuarioController implements Serializable {
         return "";
     }
 
+
+    //Vamos a probar mostrando un logger
+    //Se encarga de peprarar la lista de los usuarios.
     public String prepareList() {
         recargarLista();
         return "/administrador/listaUsuarios";

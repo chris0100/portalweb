@@ -259,6 +259,8 @@ public class T001Usuario implements Serializable {
         this.primerLogin = primerLogin;
     }
 
+
+    //Obtiene la lista de roles
     @XmlTransient
     public List<T002Rol> getT002RolList() {
         return t002RolList;
