@@ -1535,14 +1535,17 @@ public class PedidoController implements Serializable {
                                 } else {
                                     mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " no se encuentra en nuestra base de datos";
                                     errores++;
+                                    listaItemPedidoSelect.clear();
                                 }
                             } else {
                                 errores++;
                                 mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " se encuentra duplicado en la asignación de ítems, por favor comunicarse con su asesor comercial";
+                                listaItemPedidoSelect.clear();
                             }
                         } catch (Exception e) {
                             mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " no se encuentra en nuestra base de datos";
                             errores++;
+                            listaItemPedidoSelect.clear();
                         }
                     }
                     //Revisa la siguiente columna que es de cantidad(und o decimales cuando es mts )
@@ -1566,6 +1569,7 @@ public class PedidoController implements Serializable {
                                             itemPedidoActual.setCantidad(new BigDecimal(cantidad));
                                         } catch (Exception e) {
                                             mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila) + " - La unidad de medida del ítem es UND, el valor " + contenidoCelda + " no es correcto";
+                                            listaItemPedidoSelect.clear();
                                         }
                                     }
 
@@ -1575,10 +1579,21 @@ public class PedidoController implements Serializable {
                                     }
                                 } catch (Exception e) {
                                     mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila) + " - El valor " + contenidoCelda + " no es correcto";
+                                    listaItemPedidoSelect.clear();
                                 }
 
+
+                                //Añade el item pedido actual.
                                 addItemPedido();
                                 itemsCargadosPlano++;
+
+                                // Si hay errores en algun momento se vacea la lista para que solo cuente errores
+                                //Y para que no se agregue ningun item.
+                                if (errores != 0){
+                                    listaItemPedidoSelect.clear();
+                                    itemsCargadosPlano--;
+                                }
+
                             } else {
                                 errores++;
                             }
@@ -1590,6 +1605,7 @@ public class PedidoController implements Serializable {
                             itemPedidoActual = new T004ItemPedido();
                             errores++;
                             lineasErrores = lineasErrores + " | " + String.valueOf(fila);
+                            listaItemPedidoSelect.clear();
                         }
                     }
                 }
@@ -1597,6 +1613,7 @@ public class PedidoController implements Serializable {
 
         } catch (Exception e) {
             e.printStackTrace();
+            listaItemPedidoSelect.clear();
         }
 
         if (lineasErrores.equals("") && errores == 0) {
@@ -2185,7 +2202,6 @@ public class PedidoController implements Serializable {
     }
 
 
-
     //Recarga la consulta del item pedido.
     public void recargarConsultarItemsPedidosUnoee()
             throws SQLException {
@@ -2259,7 +2275,6 @@ public class PedidoController implements Serializable {
     }
 
 
-
     //Realiza la descarga de estructura
     public DefaultStreamedContent getDescargarEstructura() {
         try {
@@ -2269,7 +2284,6 @@ public class PedidoController implements Serializable {
             return null;
         }
     }
-
 
 
     //Descarga la estructura de Ecuador.

@@ -237,12 +237,15 @@
                                             disabled="true"
                                             value="#{consultarItemCreadoController.codBarra}"/>
                             </div>
+
+
+                            <!--value="#{consultarItemCreadoController.disponible}"-->
                             <div class="col-md-6 form-group">
                                 <h:outputLabel value="Disponible:"  />
                                 <h:inputText id="disponible"
                                              class="form-control"
                                             disabled="true"
-                                            value="#{consultarItemCreadoController.disponible}">
+                                            >
                                     <f:convertNumber type="currency" currencySymbol="" maxFractionDigits="0"/>
                                 </h:inputText>
                             </div>

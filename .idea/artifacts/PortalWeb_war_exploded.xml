@@ -41,6 +41,8 @@
           <element id="library" level="project" name="Maven: org.apache.poi:poi-ooxml-schemas:3.16" />
           <element id="library" level="project" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" />
           <element id="library" level="project" name="Maven: stax:stax-api:1.0.1" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.30" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-jdk14:1.7.30" />
         </element>
       </element>
       <element id="directory" name="META-INF">

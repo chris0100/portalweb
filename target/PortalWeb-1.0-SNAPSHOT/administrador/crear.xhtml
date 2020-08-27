@@ -9,6 +9,9 @@
     <ui:composition template="/template/template.xhtml">
         <ui:define name="title">Gestión de usuarios</ui:define> 
         <ui:define name="menu">
+
+
+            <!--NAVBAR LATERAL-->
             <h:form id="menu-principal">
                <ul class="nav navbar-nav">
                     <li style="margin-top: 20px">
@@ -17,6 +20,7 @@
                             <span>Dashboard</span>
                         </h:commandLink>
                     </li>
+
                     <li jsf:rendered="#{loginController.servicioCliente}">
                         <h:commandLink action="#{pedidoController.prepareListaErrores}"
                                       rendered="#{loginController.servicioCliente}">
@@ -25,6 +29,7 @@
                             <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
                         </h:commandLink>
                     </li>
+
                     <li jsf:rendered="#{loginController.servicioClienteJefe}">
                         <h:commandLink action="#{pedidoController.prepareListaErroresCompleto}" 
                                        rendered="#{loginController.servicioClienteJefe}">
@@ -32,6 +37,7 @@
                             <span>Lista de errores completo</span>
                         </h:commandLink>
                     </li>
+
                    <li jsf:rendered="#{loginController.admin}">
                        <h:commandLink action="#{usuarioController.prepareList}" 
                                       rendered="#{loginController.admin}">
@@ -39,9 +45,11 @@
                             <span>Lista de usuarios</span>
                         </h:commandLink>
                     </li>
+
                     <li class="menu-item-has-children dropdown" jsf:rendered="#{loginController.cliente}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-shopping-cart"></i>Gestión de pedidos</a>
-                        <ul class="sub-menu children dropdown-menu"> 
+                        <ul class="sub-menu children dropdown-menu">
+
                             <li>
                                 <h:commandLink action="#{pedidoController.prepareCreate}">
                                     <i class="fa fa-plus"></i> 
@@ -49,6 +57,7 @@
                                     <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
                                 </h:commandLink>
                             </li>
+
                             <li jsf:rendered="#{loginController.pedidoEcuador}">
                                 <h:commandLink action="#{pedidoController.prepareCreateEcuador}">
                                     <i class="fa fa-plus"></i> 
@@ -56,6 +65,7 @@
                                     <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
                                 </h:commandLink>
                             </li>
+
                             <li>
                                 <h:commandLink action="#{pedidoController.prepareListaElaboracion}">
                                     <i class="fa fa-file"></i> 
@@ -63,6 +73,7 @@
                                     <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
                                 </h:commandLink>
                             </li>
+
                             <li>
                                 <h:commandLink action="#{pedidoController.prepareListaHistorial}">
                                     <i class="fa fa-history"></i> 
@@ -70,6 +81,7 @@
                                     <f:setPropertyActionListener value="#{loginController.userLogueado}" target="#{pedidoController.usuarioActual}"/>
                                 </h:commandLink>
                             </li>
+
                             <li>
                                 <h:commandLink action="#{pedidoController.prepareListaVerificacion}">
                                     <i class="fa fa-check"></i> 
@@ -79,24 +91,31 @@
                             </li>
                         </ul>
                     </li>
+
                    <li jsf:rendered="#{loginController.proveedor}">
                         <h:commandLink action="#{certificadoController.prepareParametros}">
                             <i class="menu-icon fa fa-file"></i> 
                             <span>Certificados proveedores</span>
                         </h:commandLink>
                     </li>
+
                    <li jsf:rendered="#{loginController.itemUnoee}">
                        <h:commandLink action="#{consultarItemCreadoController.prepareList}">
                             <i class="menu-icon fa fa-diamond"></i> 
                             <span>Validar ítem creado</span>
                         </h:commandLink>
                     </li>
+
                 </ul>
             </h:form>
-        </ui:define>   
+        </ui:define>
+
+
         <ui:define name="body">
             <p:growl id="growl" showDetail="true" life="2000"/>
             <h:form>
+
+                <!--Ingresar el nombre-->
                 <div class="form-group">
                     <h:outputLabel value="Nombre:"  />
                     <input class="form-control" jsf:id="nomUsuarioInputText" jsf:value="#{usuarioController.usuarioActual.nombre}" 
@@ -108,16 +127,21 @@
                     </input>
                     <p:message id="nomUsuarioMessage" for="nomUsuarioInputText"/>
                 </div>
+
+                <!--Ingresar el NIT/Identificacion-->
                 <div class="form-group">
                     <h:outputLabel value="Nit/identificación:"  />
                     <input class="form-control" jsf:id="nitInputText" jsf:value="#{usuarioController.usuarioActual.nit}" 
-                           type="text" required="true" placeholder="Nombres"
+                           type="text" required="true" placeholder="Nit/Identificacion"
                             jsf:requiredMessage="Por favor ingrese el nit">
                             <f:ajax execute="@this" render="nitMessage"/>
                     </input>
                     <p:message id="nitMessage" for="nitInputText"/>
                 </div>
+
                 <p:separator />
+
+                <!--Seleccion en la lista del ROL con checkButton-->
                 <div class="form-group">
                     <h:outputLabel value="Rol:" for="rolInputText" />
                     <p:selectManyCheckbox layout="grid" columns="1" id="rolInputText" value="#{usuarioController.listaRol}"
@@ -128,6 +152,8 @@
                         <f:ajax execute="@this" render="rolMessage"/>
                     </p:selectManyCheckbox>
                 </div>
+
+                <!--Ingreso del email-->
                 <div class="form-group">
                     <h:outputLabel value="Email:"  />
                     <input class="form-control" type="text" jsf:id="correoInputText" 
@@ -138,6 +164,9 @@
                     </input>
                     <p:message id="correoMessage" for="correoInputText"/>
                 </div>
+
+
+                <!--Ingresar el username-->
                 <div class="form-group">
                     <h:outputLabel value="Username:"  />
                     <input class="form-control" type="text" jsf:id="usernameInputText" 
@@ -148,6 +177,9 @@
                     </input>
                     <p:message id="usernameMessage" for="usernameInputText"/>
                 </div>
+
+
+                <!--Ingresar la contraseña-->
                 <div class="form-group">        
                     <h:outputLabel value="Contraseña:"  />   
                     <p:password class="form-control" id="contra1InputText" required="true"
@@ -157,7 +189,10 @@
                                           validatorMessage="Las contraseñas no coinciden">
                     </p:password>
                     <p:message id="contra1Message" for="contra1InputText" />
-                </div>                
+                </div>
+
+
+                <!--Ingreso de la contraseña nuevamente-->
                  <div class="form-group">        
                     <h:outputLabel value="Repetir contraseña:"  />   
                     <p:password class="form-control" id="contra2InputText" required="true"
@@ -166,10 +201,16 @@
                     </p:password>
                     <p:message id="contra2Message" for="contra2InputText" />
                 </div>
+
+
+                <!--Se solicita cambiar la clave del primer ingreso-->
                 <div class="form-group">
                     <h:outputLabel value="Solicitar cambio de clave al ingresar: "  />
                     <p:selectBooleanCheckbox value="#{usuarioController.usuarioActual.primerLogin}" /> 
                 </div>
+
+
+                <!--BOTON PARA GUARDAR EL USUARIO-->
                 <div class="col-sm-4 form-group">
                     <p:commandButton class="boton-prime"
                             ajax="false"
@@ -177,6 +218,9 @@
                             action="#{usuarioController.addUsuario}"
                             onclick="onSubmitButton();"/>
                 </div>
+
+
+                <!--CANCELAR EL GUARDADO DE USUARIO QUE ME REDIRIGE A LA LISTA DE USUARIOS-->
                 <div class="col-sm-4 form-group">    
                     <p:button class="boton-primeRojo" value="Cancelar" outcome="listaUsuarios"/>
                 </div>

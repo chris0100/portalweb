@@ -29,6 +29,8 @@ import javax.faces.event.ActionEvent;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.context.RequestContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -37,6 +39,8 @@ import org.primefaces.context.RequestContext;
 @Named(value = "usuarioController")
 @SessionScoped
 public class UsuarioController implements Serializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     @EJB
     private T001UsuarioFacade usuarioFacade;
@@ -218,6 +222,8 @@ public class UsuarioController implements Serializable {
     //Se encarga de peprarar la lista de los usuarios.
     public String prepareList() {
         recargarLista();
+        logger.info("ESTA ES UNA PRUEBA PARA MOSTRAR LO QUE ESTA SUCEDIENDO");
+        System.out.println("AQUI SE MUESTRA LO QUE ESTA SUCEDIENDO EN SOUT");
         return "/administrador/listaUsuarios";
     }
 
