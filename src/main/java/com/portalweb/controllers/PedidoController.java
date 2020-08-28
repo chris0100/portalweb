@@ -1638,7 +1638,7 @@ public class PedidoController implements Serializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            listaItemPedidoSelect.clear();
+            //listaItemPedidoSelect.clear();
         }
 
         if (lineasErrores.equals("") && errores == 0) {
@@ -1659,11 +1659,11 @@ public class PedidoController implements Serializable {
         } else {
             cadenaCaracteresText1 = "Errores encontrados: \n ------------------------------------------------------" + mensajeErrores;
         }
-
-
     }
 
 
+
+    //Procesa el xls para pedidos de ecuador.
     public void procesarXlsEcuador(String nombre) {
         int errores = 0;
         int contarLinea = 0;
