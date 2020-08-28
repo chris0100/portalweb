@@ -1324,6 +1324,7 @@ public class PedidoController implements Serializable {
             Sheet firstSheet = workbook.getSheetAt(0);
             Iterator iterator = firstSheet.iterator();
 
+
             DataFormatter formatter = new DataFormatter();
             int celda = 0;
             int fila = 0;
@@ -1336,30 +1337,43 @@ public class PedidoController implements Serializable {
                 while (cellIterator.hasNext()) {
                     Cell cell = (Cell) cellIterator.next();
                     String contenidoCelda = formatter.formatCellValue(cell);
+                    System.out.println("cont-celda: " + contenidoCelda);
 
-                    if (fila == 0) {
-                        if (celda == 0) {
-                            celda++;
-                            cadenaCaracteresText1 = String.format("%-30s", "CÓDIGO ÍTEM");
-                        } else {
-                            celda = 0;
-                            fila++;
-                            nextRow = firstSheet.getRow(fila);
-                            cadenaCaracteresText1 = cadenaCaracteresText1 + " | " + String.format("%-30s", "CANTIDAD") + "\n------------------------------------------------\n";
+                    //Revisa si el contenido de la celda viene vacio
+                    if(!contenidoCelda.trim().equals("")) {
+
+
+                        //para la cabecera unicamente
+                        if (fila == 0) {
+                            if (celda == 0) {
+                                celda++;
+                                cadenaCaracteresText1 = String.format("%-30s", "CÓDIGO ÍTEM");
+                            } else {
+                                celda = 0;
+                                fila++;
+                                nextRow = firstSheet.getRow(fila);
+                                cadenaCaracteresText1 = cadenaCaracteresText1 + " | " + String.format("%-30s", "CANTIDAD") + "\n------------------------------------------------\n";
+                            }
                         }
-                    } else {
-                        if (celda == 0) {
-                            celda++;
-                            cadenaCaracteresText1 = cadenaCaracteresText1 + String.format("%-30s", contenidoCelda);
-                        } else {
-                            celda = 0;
-                            fila++;
-                            nextRow = firstSheet.getRow(fila);
-                            cadenaCaracteresText1 = cadenaCaracteresText1 + " | " + contenidoCelda + "\n";
+
+                        //para el resto de filas
+                        else {
+                            if (celda == 0) {
+                                celda++;
+                                cadenaCaracteresText1 = cadenaCaracteresText1 + String.format("%-30s", contenidoCelda);
+                            } else {
+                                celda = 0;
+                                fila++;
+                                nextRow = firstSheet.getRow(fila);
+                                cadenaCaracteresText1 = cadenaCaracteresText1 + " | " + contenidoCelda + "\n";
+                            }
                         }
+                        //System.out.println("Aqui va la cadena de caracteres****************************");
+                        //System.out.println(cadenaCaracteresText1);
                     }
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1479,133 +1493,144 @@ public class PedidoController implements Serializable {
                     Cell cell = (Cell) cellIterator.next();
                     String contenidoCelda = formatter.formatCellValue(cell);
 
-                    if (celda == 0) {
-                        try {
-                            celda++;
 
-                            if (contenidoCelda.trim().isEmpty() || contenidoCelda == null) {
-                                break;
-                            }
+                    //muestra el contenido de cada celda que vaya leyendo en el excel
+                    System.out.println("contenido celda en iteracion: " + contenidoCelda);
 
-
-                            //Realiza la revision del item duplicado, pero busca en el procedimiento homologar_cod_cliente, trae resultados
-                            //itera y luego retorna la cantidad para itemDuplicado
-                            int itemDuplicado = getItemPedidoFacade().contarHomologarItemDuplicado(usuarioActual.getNit(), contenidoCelda);
+                    //Revisa si el contenido de la celda viene vacio
+                    if (!contenidoCelda.trim().equals("")) {
 
 
-                            //NUEVA PARTE
-                            //Si el item duplicado es igual a cero significa que no encontro ningun regristro que es homologado cod cliente item
-                            if (itemDuplicado == 0) {
+                        if (celda == 0) {
+                            try {
+                                celda++;
 
-                                //Se procede a buscar por el codigo de barras
-                                itemDuplicado = getItemPedidoFacade().contarCodigoBarrasItem(contenidoCelda);
-
-                                //Se ajusta por codigo de barras
-                                porCodBarras = true;
-                            }
-
-
-                            //Si encuentra al menos uno, agrega el item
-                            if (itemDuplicado <= 1) {
-
-                                //Si no se hizo por codigo de barras
-                                if (!porCodBarras) {
-                                    //trae los datos homologados de tipo string
-                                    setItemHomologado(getItemPedidoFacade().homologarItem(usuarioActual.getNit(), contenidoCelda));
-                                } else {
-                                    //trae los datos referenciados al codigo de barras
-                                    setItemHomologado(getItemPedidoFacade().itemPorCodBarras(contenidoCelda));
+                                if (contenidoCelda.trim().isEmpty() || contenidoCelda == null) {
+                                    break;
                                 }
 
 
-                                //Si no es nulo, pasa los datos a cada variable.
-                                if (getItemHomologado() != null) {
-                                    codigoCliente = contenidoCelda;
-                                    itemPatron = getItemHomologado().substring(0, 54);
-                                    ext1 = getItemHomologado().substring(54, 100);
-                                    ext2 = getItemHomologado().substring(100, 147);
-                                    itemPedidoActual.setUnidadMedida(getItemHomologado().substring(147, 151).trim());
+                                //Realiza la revision del item duplicado, pero busca en el procedimiento homologar_cod_cliente, trae resultados
+                                //itera y luego retorna la cantidad para itemDuplicado
+                                int itemDuplicado = getItemPedidoFacade().contarHomologarItemDuplicado(usuarioActual.getNit(), contenidoCelda);
 
 
-                                    for (String s : itemPedidoFacade.consultaDecimalesUnidadInventario(itemPedidoActual.getUnidadMedida())) {
-                                        cantidadDecimales = Integer.parseInt(s);
+                                //NUEVA PARTE
+                                //Si el item duplicado es igual a cero significa que no encontro ningun regristro que es homologado cod cliente item
+                                if (itemDuplicado == 0) {
+
+                                    //Se procede a buscar por el codigo de barras
+                                    itemDuplicado = getItemPedidoFacade().contarCodigoBarrasItem(contenidoCelda);
+
+                                    //Se ajusta por codigo de barras
+                                    porCodBarras = true;
+                                }
+
+
+                                //Si encuentra al menos uno, agrega el item
+                                if (itemDuplicado <= 1) {
+
+                                    //Si no se hizo por codigo de barras
+                                    if (!porCodBarras) {
+                                        //trae los datos homologados de tipo string
+                                        setItemHomologado(getItemPedidoFacade().homologarItem(usuarioActual.getNit(), contenidoCelda));
+                                    } else {
+                                        //trae los datos referenciados al codigo de barras
+                                        setItemHomologado(getItemPedidoFacade().itemPorCodBarras(contenidoCelda));
                                     }
-                                    itemEncontrado = true;
-                                    porCodBarras = false;
+
+
+                                    //Si no es nulo, pasa los datos a cada variable.
+                                    if (getItemHomologado() != null) {
+                                        codigoCliente = contenidoCelda;
+                                        itemPatron = getItemHomologado().substring(0, 54);
+                                        ext1 = getItemHomologado().substring(54, 100);
+                                        ext2 = getItemHomologado().substring(100, 147);
+                                        itemPedidoActual.setUnidadMedida(getItemHomologado().substring(147, 151).trim());
+
+
+                                        for (String s : itemPedidoFacade.consultaDecimalesUnidadInventario(itemPedidoActual.getUnidadMedida())) {
+                                            cantidadDecimales = Integer.parseInt(s);
+                                        }
+                                        itemEncontrado = true;
+                                        porCodBarras = false;
+                                    } else {
+                                        mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " no se encuentra en nuestra base de datos";
+                                        errores++;
+                                        listaItemPedidoSelect.clear();
+                                    }
                                 } else {
-                                    mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " no se encuentra en nuestra base de datos";
                                     errores++;
+                                    mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " se encuentra duplicado en la asignación de ítems, por favor comunicarse con su asesor comercial";
                                     listaItemPedidoSelect.clear();
                                 }
-                            } else {
+                            } catch (Exception e) {
+                                mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " no se encuentra en nuestra base de datos";
                                 errores++;
-                                mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " se encuentra duplicado en la asignación de ítems, por favor comunicarse con su asesor comercial";
                                 listaItemPedidoSelect.clear();
                             }
-                        } catch (Exception e) {
-                            mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila + 1) + " - El código " + contenidoCelda + " no se encuentra en nuestra base de datos";
-                            errores++;
-                            listaItemPedidoSelect.clear();
                         }
-                    }
-                    //Revisa la siguiente columna que es de cantidad(und o decimales cuando es mts )
-                    else {
-                        try {
-                            if (getItemHomologado() != null) {
-                                contarLinea++;
-                                celda = 0;
-                                fila++;
-                                nextRow = firstSheet.getRow(fila);
-                                try {
 
-                                    if (contenidoCelda.trim().isEmpty() || contenidoCelda == null) {
-                                        break;
-                                    }
 
-                                    //Cuando son unidades
-                                    if (itemPedidoActual.getUnidadMedida().equals("UND")) {
-                                        try {
-                                            int cantidad = Integer.parseInt(contenidoCelda.trim());
-                                            itemPedidoActual.setCantidad(new BigDecimal(cantidad));
-                                        } catch (Exception e) {
-                                            mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila) + " - La unidad de medida del ítem es UND, el valor " + contenidoCelda + " no es correcto";
-                                            listaItemPedidoSelect.clear();
+                        //Revisa la siguiente columna que es de cantidad(und o decimales cuando es mts )
+                        else {
+                            try {
+                                if (getItemHomologado() != null) {
+                                    contarLinea++;
+                                    celda = 0;
+                                    fila++;
+                                    nextRow = firstSheet.getRow(fila);
+                                    try {
+
+                                        if (contenidoCelda.trim().isEmpty() || contenidoCelda == null) {
+                                            break;
                                         }
+
+                                        //Cuando son unidades
+                                        if (itemPedidoActual.getUnidadMedida().equals("UND")) {
+                                            try {
+                                                int cantidad = Integer.parseInt(contenidoCelda.trim());
+                                                itemPedidoActual.setCantidad(new BigDecimal(cantidad));
+                                            } catch (Exception e) {
+                                                mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila) + " - La unidad de medida del ítem es UND, el valor " + contenidoCelda + " no es correcto";
+                                                listaItemPedidoSelect.clear();
+                                            }
+                                        }
+
+                                        //Cuando es por metros
+                                        else {
+                                            itemPedidoActual.setCantidad(new BigDecimal(contenidoCelda.trim()).setScale(cantidadDecimales, BigDecimal.ROUND_HALF_EVEN));
+                                        }
+                                    } catch (Exception e) {
+                                        mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila) + " - El valor " + contenidoCelda + " no es correcto";
+                                        listaItemPedidoSelect.clear();
                                     }
 
-                                    //Cuando es por metros
-                                    else {
-                                        itemPedidoActual.setCantidad(new BigDecimal(contenidoCelda.trim()).setScale(cantidadDecimales, BigDecimal.ROUND_HALF_EVEN));
+
+                                    //Añade el item pedido actual.
+                                    addItemPedido();
+                                    itemsCargadosPlano++;
+
+                                    // Si hay errores en algun momento se vacea la lista para que solo cuente errores
+                                    //Y para que no se agregue ningun item.
+                                    if (errores != 0) {
+                                        listaItemPedidoSelect.clear();
+                                        itemsCargadosPlano--;
                                     }
-                                } catch (Exception e) {
-                                    mensajeErrores = mensajeErrores + " \n " + "Fila: " + (fila) + " - El valor " + contenidoCelda + " no es correcto";
-                                    listaItemPedidoSelect.clear();
+
+                                } else {
+                                    errores++;
                                 }
-
-
-                                //Añade el item pedido actual.
-                                addItemPedido();
-                                itemsCargadosPlano++;
-
-                                // Si hay errores en algun momento se vacea la lista para que solo cuente errores
-                                //Y para que no se agregue ningun item.
-                                if (errores != 0){
-                                    listaItemPedidoSelect.clear();
-                                    itemsCargadosPlano--;
-                                }
-
-                            } else {
+                            } catch (Exception e) {
+                                codigoCliente = "";
+                                itemPatron = "";
+                                ext1 = "";
+                                ext2 = "";
+                                itemPedidoActual = new T004ItemPedido();
                                 errores++;
+                                lineasErrores = lineasErrores + " | " + String.valueOf(fila);
+                                listaItemPedidoSelect.clear();
                             }
-                        } catch (Exception e) {
-                            codigoCliente = "";
-                            itemPatron = "";
-                            ext1 = "";
-                            ext2 = "";
-                            itemPedidoActual = new T004ItemPedido();
-                            errores++;
-                            lineasErrores = lineasErrores + " | " + String.valueOf(fila);
-                            listaItemPedidoSelect.clear();
                         }
                     }
                 }
