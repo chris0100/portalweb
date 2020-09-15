@@ -599,6 +599,7 @@ public class LoginController implements Serializable {
             //Login via the Servlet Context
             getRequest().login(username, password);
             usuario = getUserLogueado();
+            //System.out.println(usuario);
             setUsuario(usuario);
             limpiar();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenid@ "  , usuario.toString()));

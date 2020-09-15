@@ -240,6 +240,9 @@ public class UsuarioController implements Serializable {
             return null;
         }
     }
+
+
+
     public void validarUserName(FacesContext contex, UIComponent component, Object value)throws ValidatorException{
         T001Usuario usuarioConsulta=getUsuarioFacade().findByUsername((String)value);
         if(usuarioConsulta != null){

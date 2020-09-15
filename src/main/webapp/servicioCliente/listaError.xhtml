@@ -90,16 +90,24 @@
                 </ul>
             </h:form>
         </ui:define>
+
+
+
         <ui:define name="body" >
             <p:growl id="growl" showDetail="true" life="2000"/>
             <h:form id="documentosFormList">
+
+
                <p:outputPanel id="documentosTablePanel">
+
+                   <!-- tabla para pedidos con errores -->
                    <p:dataTable value="#{pedidoController.listaPedidoErrorAsesor}" var="item"
                                 rows="50" id="documentosTable" paginator="true"
                                 selectionMode="single" selection="#{pedidoController.pedidoActual}" rowKey="#{item.idPedido}"
                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                 rowsPerPageTemplate="50, 100,150">
                        <p:ajax event="rowSelect" oncomplete="PF('itemDialog').show()" update=":documentosFormList:detalle" />
+
                        <f:facet name="header">
                            <div class="container-fluid">
                                <div class="row">
@@ -111,47 +119,60 @@
                                </div>
                            </div>
                        </f:facet>
+
                        <p:column filterBy="#{item.idPedido}"  filterMatchMode="contains">
                            <f:facet name="header">Consecutivo</f:facet>
                            <h:outputText style="font-weight: bold" value="#{item.idPedido}"/>
                        </p:column>
+
                        <p:column filterBy="#{item.oc}"  filterMatchMode="contains">
                            <f:facet name="header">Orden de compra</f:facet>
                            <h:outputText style="font-weight: bold" value="#{item.oc}"/>
                        </p:column>
+
                        <p:column filterBy="#{item.idUsuario.toString()}" filterMatchMode="contains">
                            <f:facet name="header">Usuario pedido</f:facet>
                            <h:outputText style="font-weight: bold" value="#{item.idUsuario.toString()}"/>
                        </p:column>
+
                        <p:column filterBy="#{item.nota}" filterMatchMode="contains">
                            <f:facet name="header">Notas.</f:facet>
                            <h:outputText value="#{item.nota}"/>
                        </p:column>
+
                        <p:column filterBy="#{item.sucursalFacturar}" filterMatchMode="contains">
                            <f:facet name="header">Sucursal a facturar</f:facet>
                            <h:outputText value="#{item.sucursalFacturar}"/>
                        </p:column>
+
                        <p:column filterBy="#{item.sucursalRemisionar}" filterMatchMode="contains">
                            <f:facet name="header">Sucursal a remisionar</f:facet>
                            <h:outputText value="#{item.sucursalRemisionar}"/>
                        </p:column>
+
                        <p:column>
                             <f:facet name="header">Fecha de pedido</f:facet>
                             <h:outputText value="#{item.fechaPedido}">
                                 <f:convertDateTime pattern="dd/MM/YYYY HH:mm"/>
                             </h:outputText>
                        </p:column>
+
                        <p:column filterBy="#{item.estadoString}" filterMatchMode="contains">
                            <f:facet name="header">Estado</f:facet>
                            <h:outputText value="#{item.estadoString}"/>
                        </p:column>
+
+                       <!--BOTON PARA VER EL DETALLE-->
                        <p:column width="80">
                             <p:commandButton id="ver" icon="ui-icon-search" styleClass="boton-primeVerdePequeno" action="#{pedidoController.prepareVerError}" ajax="false">
                                 <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoActual}"/>
                             </p:commandButton>
                             <p:tooltip for="ver" value="Ver"/>
                         </p:column>
+
                     </p:dataTable>
+
+
                    <p:dialog header="Ítems del pedido" widgetVar="itemDialog" closeOnEscape="true" resizable="true" width="800" height="60%" modal="true">
                         <h:panelGroup id="detalle">
                             <div class="container-fluid">
@@ -172,6 +193,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <p:dataTable  id="tablaFuncion"
                                           emptyMessage="No se encontraron registros"
                                           value="#{pedidoController.listaItemPedido}" 
@@ -211,6 +233,7 @@
                             </div>
                         </h:panelGroup>
                     </p:dialog>
+
                 </p:outputPanel>
             </h:form>
         </ui:define>

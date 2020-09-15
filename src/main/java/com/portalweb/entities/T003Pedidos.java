@@ -119,50 +119,67 @@ public class T003Pedidos implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_pedido")
     private Integer idPedido;
+
     @Size(max = 10)
     @Column(name = "cod_pedido")
     private String codPedido;
+
     @Size(max = 1073741823)
     @Column(name = "nota")
     private String nota;
+
     @Column(name = "estado")
     private Short estado;
+
     @Column(name = "fecha_pedido")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaPedido;
+
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "total_bruto")
     private BigDecimal totalBruto;
+
     @Column(name = "descuentos")
     private BigDecimal descuentos;
+
     @Column(name = "impuestos")
     private BigDecimal impuestos;
+
     @Column(name = "total")
     private BigDecimal total;
+
     @Size(max = 100)
     @Column(name = "sucursal_remisionar")
     private String sucursalRemisionar;
+
     @Size(max = 100)
     @Column(name = "sucursal_facturar")
     private String sucursalFacturar;
+
     @Size(max = 150)
     @Column(name = "punto_envio")
     private String puntoEnvio;
+
     @Size(max = 150)
     @Column(name = "tercero_vendedor")
     private String terceroVendedor;
+
     @Size(max = 100)
     @Column(name = "contacto")
     private String contacto;
+
     @Size(max = 100)
     @Column(name = "direccion")
     private String direccion;
+
     @Size(max = 50)
     @Column(name = "oc")
     private String oc;
+
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @ManyToOne
     private T001Usuario idUsuario;
+
     @OneToMany(mappedBy = "idPedido")
     private List<T004ItemPedido> t004ItemPedidoList;
 

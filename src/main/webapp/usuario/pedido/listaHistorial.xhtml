@@ -245,13 +245,15 @@
                         <p:column sortBy="#{item.fechaEntrega}" filterBy="#{item.fechaEntrega}" filterMatchMode="contains">
                             <f:facet name="header">Fecha entrega</f:facet>
                             <h:outputText value="#{item.fechaEntrega}"/>
-                        </p:column>                        
+                        </p:column>
+
                         <p:column width="70">
                             <p:commandButton id="ver" icon="ui-icon-search" styleClass="boton-primeVerdePequeno" action="#{pedidoController.prepareVerHistorial}" ajax="false">
                                 <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoUnoee}"/>
                             </p:commandButton>
                             <p:tooltip for="ver" value="Ver"/>
                         </p:column>
+
                     </p:dataTable>
                 </p:outputPanel>
             </h:form>

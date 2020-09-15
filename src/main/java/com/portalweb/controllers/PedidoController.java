@@ -529,13 +529,16 @@ public class PedidoController implements Serializable {
         }
         listaExt1 = getItemPedidoFacade().consultaExt1(tipoExt1);
         listaExt2 = getItemPedidoFacade().consultaExt2(tipoExt2);
+
         List<String> unidadInventario = itemPedidoFacade.consultaUnidadInventario(codigoItem);
         for (String s : unidadInventario) {
             itemPedidoActual.setUnidadMedida(s);
         }
+
         for (String s : itemPedidoFacade.consultaDecimalesUnidadInventario(itemPedidoActual.getUnidadMedida())) {
             setDecimalesUnidadMedida(s);
         }
+
         itemPedidoActual.setCantidad(new BigDecimal(0));
         consultarDescripcionLabelExt();
         itemPatron = itemPatron.substring(0, itemPatron.length());
@@ -623,6 +626,7 @@ public class PedidoController implements Serializable {
 
 
     public String prepareListaHistorial() throws SQLException {
+        //select top 1 convert(varchar(20),f200_rowid) from [UnoEE].[dbo].t200_mm_terceros where f200_nit = #nit
         for (String s : getPedidoFacade().consultarRowidNit(usuarioActual.getNit())) {
             rowIdCliente = s;
         }
@@ -659,7 +663,7 @@ public class PedidoController implements Serializable {
 
     // cuando se da click en crear nuevo pedido 
     public String prepareCreate() throws IOException {
-        contarMostrarPanel(); //cuenta el item homologado desde el momento que se ingresa para realizar la creacion del item.
+        contarMostrarPanel(); //cuenta el item homologado desde el momento que se ingresa para saber que pestaña habilita
         recargarCampos(); //limpia los campos
 
         listaExt1 = new ArrayList<>();
@@ -757,6 +761,7 @@ public class PedidoController implements Serializable {
     }
 
 
+    //para ver el detalle de borrador
     public String prepareVer() {
         try {
             listaItemPedidoSelect = itemPedidoFacade.consultarItemPedido(pedidoActual);
@@ -767,6 +772,7 @@ public class PedidoController implements Serializable {
     }
 
 
+    //Para ver el detalle de verificacion
     public String prepareVerVerificacion() {
         try {
             listaItemPedidoSelect = itemPedidoFacade.consultarItemPedido(pedidoActual);
@@ -1069,7 +1075,7 @@ public class PedidoController implements Serializable {
                 }
 
 
-                //Si la lista de itemPedidoSelect tiene contenido
+                //Si la lista de itemPedidoSelect tiene contenido, crear datos
                 else {
                     obtenerDatosAsesorUnoEE(pedidoActual.getIdUsuario().getIdSucursal(), pedidoActual.getIdUsuario().getNit());
 
@@ -1086,6 +1092,7 @@ public class PedidoController implements Serializable {
                         getItemPedidoFacade().create(items);
                     }
                 }
+
 
 
                 mensajeConector = "";
@@ -1112,6 +1119,8 @@ public class PedidoController implements Serializable {
                         //arma la plantilla y envia el email
                         sendMailCliente();
 
+                        // Si existe un error se envia un correo al asesor
+                        // 1(error) 0(no error)
                         if (valorConector == 1) {
                             sendMailAsesor();
                         }
@@ -1131,6 +1140,10 @@ public class PedidoController implements Serializable {
             return null;
         }
     }
+
+
+
+
 
 
     public String addPedidoEcuador() {
@@ -2003,6 +2016,10 @@ public class PedidoController implements Serializable {
         String idPedido = String.valueOf(pedidoActual.getIdPedido());
         String pvstrDatos = getPedidoFacade().obtenerConectorPedido(idPedido);
 
+        System.out.println("*********************CONECTOR");
+        System.out.println(pvstrDatos);
+
+
         // TODO Auto-generated method stub
         WSUNOEESoapProxy proxy = new WSUNOEESoapProxy();
         ShortHolder holder = new ShortHolder((short) 0);
@@ -2014,6 +2031,7 @@ public class PedidoController implements Serializable {
             mensajeConector = mensajeConector + element.getAsString();
             valorConector = element.getLength();
         }
+
     }
 
 
@@ -2236,6 +2254,7 @@ public class PedidoController implements Serializable {
 
         String query = "SELECT distinct [f431_rowid] ,[f431_rowid_pv_docto] ,t120.f120_id codItem ,t120.f120_descripcion descripcion ,t120.f120_id_unidad_inventario und ,CAST( LEFT(LTRIM(RTRIM(t121.f121_id_ext1_detalle)) + '    ', 4)as nvarchar(4))+ ' - '+LTRIM(RTRIM(t117.f117_descripcion)) ext1 ,CAST( LEFT(LTRIM(RTRIM(t121.f121_id_ext2_detalle)) + '    ', 5)as nvarchar(5))+ ' - '+LTRIM(RTRIM(t119.f119_descripcion)) ext2 ,t431.f431_cant1_pedida cantPedida ,t431.f431_precio_unitario_base precioUnd ,t431.f431_vlr_bruto valorBruto ,t431.f431_vlr_imp valorImp ,t431.f431_vlr_neto valorNeto , t431.f431_fecha_entrega fechaEntrega FROM [UnoEE].[dbo].[t431_cm_pv_movto] t431 inner join [UnoEE].[dbo].t121_mc_items_extensiones t121 on t121.f121_rowid = t431.f431_rowid_item_ext inner join [UnoEE].[dbo].t120_mc_items t120 on t120.f120_rowid = t121.f121_rowid_item inner join [UnoEE].[dbo].t117_mc_extensiones1_detalle t117 on t117.f117_id = t121.f121_id_ext1_detalle inner join [UnoEE].[dbo].t119_mc_extensiones2_detalle t119 on t119.f119_id = t121.f121_id_ext2_detalle where f431_rowid_pv_docto = " + pedidoUnoee.getRowid();
         listaPedidosUnoee = new ArrayList<>();
+
         try {
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);

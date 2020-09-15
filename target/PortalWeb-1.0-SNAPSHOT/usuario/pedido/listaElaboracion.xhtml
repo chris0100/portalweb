@@ -162,22 +162,26 @@
                            <f:facet name="header">Estado</f:facet>
                            <h:outputText value="#{item.estadoString}"/>
                        </p:column>
+
                        <p:column width="150">
                            <p:commandButton icon="ui-icon-pencil" id="editar" styleClass="boton-primeAzulPequeno" ajax="false" action="#{pedidoController.prepareEdit}" >
                                 <f:attribute name="item" value="#{item}"/>
                                 <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoActual}"/>
                             </p:commandButton>
                             <p:tooltip for="editar" value="Editar"/>
+
                             <p:commandButton id="ver" icon="ui-icon-search" styleClass="boton-primeVerdePequeno" action="#{pedidoController.prepareVer}" ajax="false">
                                 <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoActual}"/>
                             </p:commandButton>
                             <p:tooltip for="ver" value="Ver"/>
+
                             <a href="listaElaboracion.xhtml"></a>
                             <p:commandButton id="borrar" icon="ui-icon-trash" styleClass="boton-primeRojoPequeno" update="documentosTable" oncomplete="PF('dlg1').show();" immediate="true">
                                 <f:setPropertyActionListener value="#{item}" target="#{pedidoController.pedidoActual}"/>
                             </p:commandButton>
                             <p:tooltip for="borrar" value="Borrar"/>
                         </p:column>
+
                     </p:dataTable>
                    <p:dialog header="Ítems del pedido" widgetVar="itemDialog" closeOnEscape="true" resizable="true" width="800" height="60%" modal="true">
                         <h:panelGroup id="detalle">

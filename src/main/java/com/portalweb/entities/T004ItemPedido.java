@@ -55,6 +55,7 @@ import javax.xml.bind.annotation.XmlRootElement;
         , @NamedQuery(name = "T004ItemPedido.findByUnidadMedida", query = "SELECT t FROM T004ItemPedido t WHERE t.unidadMedida = :unidadMedida")
         , @NamedQuery(name = "T004ItemPedido.findByIdPedido", query = "SELECT t FROM T004ItemPedido t WHERE t.idPedido = :idPedido")
         , @NamedQuery(name = "T004ItemPedido.findByPrecioUnitario", query = "SELECT t FROM T004ItemPedido t WHERE t.precioUnitario = :precioUnitario")})
+
 @NamedStoredProcedureQueries({
         @NamedStoredProcedureQuery(
                 name = "execItemCliente",
@@ -213,8 +214,10 @@ public class T004ItemPedido implements Serializable {
 
     @Column(name = "unoee_precios")
     private Short unoeePrecios;
+
     @Column(name = "unoee_portafolio")
     private Short unoeePortafolio;
+
     @Column(name = "unoee_listas_materiales")
     private Short unoeeListasMateriales;
 

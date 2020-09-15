@@ -368,6 +368,8 @@ public class ConsultarItemCreadoController implements Serializable {
             if (stmt != null) { stmt.close(); }
         }
     }
+
+
     public void obtenerDiponibleItem(int idItem, String ext1 , String ext2)
         throws SQLException {
         String connectionUrl ="jdbc:sqlserver://192.168.160.153\\EKACORP;databaseName=UnoEE;user=bd_eureka;password=Desarrollos478#";
@@ -387,6 +389,10 @@ public class ConsultarItemCreadoController implements Serializable {
             if (stmt != null) { stmt.close(); }
         }
     }
+
+
+
+
     public void obtenerDatosItem(int idItem)
         throws SQLException {
         String connectionUrl ="jdbc:sqlserver://192.168.160.153\\EKACORP;databaseName=UnoEE;user=bd_eureka;password=Desarrollos478#";
